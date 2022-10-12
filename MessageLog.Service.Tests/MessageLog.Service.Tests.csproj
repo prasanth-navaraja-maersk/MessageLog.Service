@@ -21,4 +21,9 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\MessageLog.Infrastructure\MessageLog.Infrastructure.csproj" />
+    <ProjectReference Include="..\MessageLog.Service\MessageLog.Service.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -1,5 +1,7 @@
 ﻿using MessageLog.Infrastructure;
 
+namespace MessageLog.Service;
+
 public class LoggingService
 {
     public long InsertMessageLogs(MessageLog.Infrastructure.MessageLog messageLog)
