@@ -7,14 +7,23 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.10">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
+	  <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.10" />
+	  <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.10">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+	  </PackageReference>
+	  <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.10">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+	  </PackageReference>
+	  <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="6.0.7" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MessageLog.Infrastructure\MessageLog.Infrastructure.csproj" />
+    <ProjectReference Include="..\MessageLog.Infrastructure\MessageLog.Infrastructure.csproj">
+	    <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+	    <IncludeAssets>MessageLog.Infrastructure.dll</IncludeAssets>
+    </ProjectReference>
   </ItemGroup>
 
 </Project>
