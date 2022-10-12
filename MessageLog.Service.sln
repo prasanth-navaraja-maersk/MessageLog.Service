@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.32014.148
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MessageLog.Service", "MessageLog.Service\MessageLog.Service.csproj", "{47AE1D53-11BA-4E89-BC90-85748AE28BEB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MessageLog.Service", "MessageLog.Service\MessageLog.Service.csproj", "{47AE1D53-11BA-4E89-BC90-85748AE28BEB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MessageLog.Infrastructure", "MessageLog.Infrastructure\MessageLog.Infrastructure.csproj", "{CA186A8A-73B5-4F6A-A8AA-2B9F74FCA993}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MessageLog.Infrastructure", "MessageLog.Infrastructure\MessageLog.Infrastructure.csproj", "{CA186A8A-73B5-4F6A-A8AA-2B9F74FCA993}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MessageLog.Service.Tests", "MessageLog.Service.Tests\MessageLog.Service.Tests.csproj", "{B3702946-D8AE-426F-855D-91844C868AC7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{CA186A8A-73B5-4F6A-A8AA-2B9F74FCA993}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CA186A8A-73B5-4F6A-A8AA-2B9F74FCA993}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CA186A8A-73B5-4F6A-A8AA-2B9F74FCA993}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B3702946-D8AE-426F-855D-91844C868AC7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B3702946-D8AE-426F-855D-91844C868AC7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B3702946-D8AE-426F-855D-91844C868AC7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B3702946-D8AE-426F-855D-91844C868AC7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
