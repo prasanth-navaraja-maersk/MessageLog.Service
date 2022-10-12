@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32014.148
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MessageLog.Service", "MessageLog.Service\MessageLog.Service.csproj", "{47AE1D53-11BA-4E89-BC90-85748AE28BEB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MessageLog.Infrastructure", "MessageLog.Infrastructure\MessageLog.Infrastructure.csproj", "{CA186A8A-73B5-4F6A-A8AA-2B9F74FCA993}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{47AE1D53-11BA-4E89-BC90-85748AE28BEB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{47AE1D53-11BA-4E89-BC90-85748AE28BEB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{47AE1D53-11BA-4E89-BC90-85748AE28BEB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{47AE1D53-11BA-4E89-BC90-85748AE28BEB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CA186A8A-73B5-4F6A-A8AA-2B9F74FCA993}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CA186A8A-73B5-4F6A-A8AA-2B9F74FCA993}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CA186A8A-73B5-4F6A-A8AA-2B9F74FCA993}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CA186A8A-73B5-4F6A-A8AA-2B9F74FCA993}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6082BFD8-8EA0-42B5-A49D-C40DC6AEE3CF}
+	EndGlobalSection
+EndGlobal
