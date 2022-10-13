@@ -6,8 +6,8 @@ public class LoggingServiceTests
     public void InsertMessageLogs_StateUnderTest_ExpectedBehavior()
     {
         // Arrange
-        var service = new LoggingService();
-        Infrastructure.MessageLog messageLog = null;
+        var service = new LoggingService(null);
+        Entities.MessageLog messageLog = null;
 
         // Act
         var result = service.InsertMessageLogs(
