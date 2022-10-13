@@ -20,6 +20,11 @@
 	  <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="6.0.7" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Extensions\" />
+    <Folder Include="Repositories\" />
+  </ItemGroup>
+
   <!--<ItemGroup>
     <ProjectReference Include="..\MessageLog.Infrastructure\MessageLog.Infrastructure.csproj">
 	    <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
