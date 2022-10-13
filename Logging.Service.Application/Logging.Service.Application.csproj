@@ -10,4 +10,8 @@
     <Folder Include="Requests\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\MessageLog.Infrastructure\MessageLog.Infrastructure.csproj" />
+  </ItemGroup>
+
 </Project>
