@@ -2,5 +2,5 @@
 
 public interface IMessageLogRepository
 {
-    long InsertMessageLogs(MessageLog messageLog);
+    Task<long> UpsertMessageLogs(MessageLog messageLog);
 }

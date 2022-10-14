@@ -1,5 +1,6 @@
 ﻿using Finance.Common.Database.Relational.Interfaces;
 using Finance.Common.Database.Relational.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace MessageLog.Infrastructure.Repositories;
 
@@ -12,9 +13,10 @@ public class MessageLogRepository : AsyncRepository<MessageLog, LoggingContext, 
         _uow = uow;
     }
 
-    public long InsertMessageLogs(MessageLog messageLog)
+    public async Task<long> UpsertMessageLogs(MessageLog messageLog)
     {
-        return _uow.DbContext.MessageLogs
-            .First(X => X.MessageId == messageLog.MessageId && X.MessageType == messageLog.MessageType).Id;
+        var log = await _uow.DbContext.MessageLogs
+            .FirstOrDefaultAsync(X => X.MessageId == messageLog.MessageId && X.MessageType == messageLog.MessageType);
+        return log!.Id;
     }
 }
