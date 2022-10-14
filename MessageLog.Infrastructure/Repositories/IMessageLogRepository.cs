@@ -2,5 +2,5 @@
 
 public interface IMessageLogRepository
 {
-    Task<long> UpsertMessageLogs(Entities.MessageLog messageLog);
+    Task<long> UpsertMessageLogs(Entities.MessageLog messageLog, CancellationToken cancellationToken);
 }

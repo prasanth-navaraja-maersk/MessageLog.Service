@@ -18,9 +18,9 @@ namespace Logging.Service.API.Controllers
         }
 
         [HttpPost(Name = "Upsert")]
-        public async Task<long> Upsert(MessageLogRequest messageLogRequest)
+        public async Task<long> Upsert(MessageLogRequest messageLogRequest, CancellationToken cancellationToken)
         {
-            return await _messageLogHandler.UpsertMessageLog(messageLogRequest);
+            return await _messageLogHandler.UpsertMessageLog(messageLogRequest, cancellationToken);
         }
     }
 }

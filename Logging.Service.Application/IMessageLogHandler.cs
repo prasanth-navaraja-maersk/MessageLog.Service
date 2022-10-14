@@ -4,5 +4,5 @@ namespace Logging.Service.Application;
 
 public interface IMessageLogHandler
 {
-    Task<long> UpsertMessageLog(MessageLogRequest messageLogRequest);
+    Task<long> UpsertMessageLog(MessageLogRequest messageLogRequest, CancellationToken cancellationToken);
 }

@@ -13,10 +13,24 @@ public class MessageLogRepository : AsyncRepository<Entities.MessageLog, Logging
         _uow = uow;
     }
 
-    public async Task<long> UpsertMessageLogs(Entities.MessageLog messageLog)
+    public async Task<long> UpsertMessageLogs(Entities.MessageLog messageLog, CancellationToken cancellationToken)
     {
-        var log = await _uow.DbContext.MessageLogs
-            .FirstOrDefaultAsync(X => X.MessageId == messageLog.MessageId && X.MessageType == messageLog.MessageType);
-        return log!.Id;
+        long id = 0;
+        var log = await _uow.DbContext.MessageLog
+            .FirstOrDefaultAsync(X => X.MessageId == messageLog.MessageId && X.MessageType == messageLog.MessageType, cancellationToken);
+        if (log == null)
+        {
+            var entity = await _uow.DbContext.MessageLog.AddAsync(messageLog, cancellationToken);
+            await _uow.DbContext.SaveChangesAsync(cancellationToken);
+            id = entity.Entity.Id;
+        }
+        else
+        {
+            _uow.DbContext.MessageLog.Update(log);
+            await _uow.DbContext.SaveChangesAsync(cancellationToken);
+            id = log!.Id;
+        }
+
+        return id;
     }
 }

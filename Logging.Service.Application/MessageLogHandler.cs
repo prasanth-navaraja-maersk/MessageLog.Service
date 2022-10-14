@@ -12,7 +12,7 @@ public class MessageLogHandler : IMessageLogHandler
         _messageLogRepository = messageLogRepository;
     }
 
-    public async Task<long> UpsertMessageLog(MessageLogRequest messageLogRequest)
+    public async Task<long> UpsertMessageLog(MessageLogRequest messageLogRequest, CancellationToken cancellationToken)
     {
         var messageLog = new MessageLog.Infrastructure.Entities.MessageLog
         {
@@ -21,6 +21,6 @@ public class MessageLogHandler : IMessageLogHandler
             MessageLogs = messageLogRequest.MessageLogs
         };
 
-        return await _messageLogRepository.UpsertMessageLogs(messageLog);
+        return await _messageLogRepository.UpsertMessageLogs(messageLog, cancellationToken);
     }
 }
