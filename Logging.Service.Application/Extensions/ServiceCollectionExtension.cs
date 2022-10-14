@@ -6,6 +6,6 @@ public static class ServiceCollectionExtension
 {
     public static void AddLoggingService(this IServiceCollection serviceCollection)
     {
-        
+        serviceCollection.AddScoped<IMessageLogHandler, MessageLogHandler>();
     }
 }

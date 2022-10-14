@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text.Json;
 using MessageLog.Infrastructure;
+using MessageLog.Infrastructure.Entities;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 

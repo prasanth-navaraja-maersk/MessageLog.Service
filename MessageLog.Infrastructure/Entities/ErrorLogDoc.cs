@@ -1,4 +1,4 @@
-﻿namespace MessageLog.Infrastructure;
+﻿namespace MessageLog.Infrastructure.Entities;
 
 public class ErrorLogDoc
 {

@@ -2,6 +2,7 @@
 using System;
 using System.Text.Json;
 using MessageLog.Infrastructure;
+using MessageLog.Infrastructure.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;

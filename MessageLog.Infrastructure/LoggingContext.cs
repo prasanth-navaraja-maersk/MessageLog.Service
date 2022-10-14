@@ -1,4 +1,5 @@
 ﻿using Finance.Common.Database.Relational.Abstractions;
+using MessageLog.Infrastructure.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
@@ -15,7 +16,7 @@ namespace MessageLog.Infrastructure
                                 "User Id = postgres; Password=postgres;Server=localhost;Port=5432;Database=LoggingService-poc;Integrated Security = true; Pooling=true";
         }
 
-        public DbSet<MessageLog> MessageLogs { get; set; }
+        public DbSet<Entities.MessageLog> MessageLogs { get; set; }
         public DbSet<ErrorLog> ErrorLogs { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
@@ -26,7 +27,7 @@ namespace MessageLog.Infrastructure
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<MessageLog>()
+            modelBuilder.Entity<Entities.MessageLog>()
                 .Property(b => b.MessageLogs)
                 .HasColumnType("jsonb");
             modelBuilder.Entity<ErrorLog>()

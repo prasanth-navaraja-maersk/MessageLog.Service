@@ -1,11 +1,11 @@
 ﻿using System.Text.Json;
 using Finance.Common.Database.Relational.Interfaces.Entities;
 
-namespace MessageLog.Infrastructure;
+namespace MessageLog.Infrastructure.Entities;
 
-public class MessageLog : IEntity<int>, ISystemCreateDate, ISystemModifiedDate
+public class MessageLog : IEntity<long>, ISystemCreateDate, ISystemModifiedDate
 {
-    public int Id { get; set; }
+    public long Id { get; set; }
     public string MessageId { get; set; }
     public string MessageType { get; set; }
 

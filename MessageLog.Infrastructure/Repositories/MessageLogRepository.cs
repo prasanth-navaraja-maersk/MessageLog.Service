@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MessageLog.Infrastructure.Repositories;
 
-public class MessageLogRepository : AsyncRepository<MessageLog, LoggingContext, int>, IMessageLogRepository
+public class MessageLogRepository : AsyncRepository<Entities.MessageLog, LoggingContext, long>, IMessageLogRepository
 {
     private readonly IUnitOfWork<LoggingContext> _uow;
 
@@ -13,7 +13,7 @@ public class MessageLogRepository : AsyncRepository<MessageLog, LoggingContext, 
         _uow = uow;
     }
 
-    public async Task<long> UpsertMessageLogs(MessageLog messageLog)
+    public async Task<long> UpsertMessageLogs(Entities.MessageLog messageLog)
     {
         var log = await _uow.DbContext.MessageLogs
             .FirstOrDefaultAsync(X => X.MessageId == messageLog.MessageId && X.MessageType == messageLog.MessageType);

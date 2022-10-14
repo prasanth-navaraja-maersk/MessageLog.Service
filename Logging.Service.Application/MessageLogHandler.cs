@@ -14,7 +14,7 @@ public class MessageLogHandler : IMessageLogHandler
 
     public async Task<long> UpsertMessageLog(MessageLogRequest messageLogRequest)
     {
-        var messageLog = new MessageLog.Infrastructure.MessageLog
+        var messageLog = new MessageLog.Infrastructure.Entities.MessageLog
         {
             MessageId = messageLogRequest.MessageId,
             MessageType = messageLogRequest.MessageType,
