@@ -10,11 +10,10 @@ namespace MessageLog.Infrastructure
         private readonly string _connectionString;
         private const string ConnectionStringKey = "DB_CONNECTION_STRING";
 
-        protected LoggingContext(DbContextOptions<LoggingContext> options) : base(options)
+        public LoggingContext(DbContextOptions<LoggingContext> options, IConfiguration configuration) : base(options)
         {
-            //_connectionString = configuration.GetConnectionString(ConnectionStringKey) ??
-            //                    "User Id = postgres; Password=postgres;Server=localhost;Port=5432;Database=LoggingService-poc;Integrated Security = true; Pooling=true";
-            _connectionString = "";
+            _connectionString = configuration.GetConnectionString(ConnectionStringKey) ??
+                                "User Id = postgres; Password=postgres;Server=localhost;Port=5432;Database=LoggingService-poc;Integrated Security = true; Pooling=true";
         }
 
         public DbSet<Entities.MessageLog> MessageLogs { get; set; }

@@ -1,6 +1,4 @@
 ﻿using Finance.Common.Database.Relational.Extensions;
-using Finance.Common.Database.Relational.Interfaces;
-using Finance.Common.Database.Relational.Interfaces.Repositories;
 using MessageLog.Infrastructure.Repositories;
 using Microsoft.Extensions.DependencyInjection;
 using SqlKata.Compilers;
@@ -14,8 +12,5 @@ public static class ServiceCollectionExtension
         serviceCollection.AddScopedPersistence<LoggingContext>();
         serviceCollection.AddQueryExecution<LoggingContext, PostgresCompiler>();
         serviceCollection.AddScoped<IMessageLogRepository, MessageLogRepository>();
-        //serviceCollection.AddScoped<IAsyncRepository<Entities.MessageLog, LoggingContext, long>,
-        //    MessageLogRepository>();
-        //serviceCollection.AddScoped<IUnitOfWork<LoggingContext>>();
     }
 }
