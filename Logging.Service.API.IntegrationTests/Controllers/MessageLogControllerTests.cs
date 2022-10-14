@@ -1,17 +1,17 @@
-﻿using Logging.Service.API.Controllers;
+﻿using System.Net.Http.Headers;
+using System.Net.Http.Json;
+using Logging.Service.API.Controllers;
 using Logging.Service.Application;
 using Microsoft.Extensions.Logging;
-using System;
 using System.Text.Json;
 using System.Text.Json.Nodes;
-using System.Threading.Tasks;
 using FluentAssertions;
 using Logging.Service.Application.Requests;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.VisualStudio.TestPlatform.TestHost;
 using Moq;
-using Xunit;
 using Bogus;
+using Logging.Service.API.IntegrationTests.TestFramework;
 
 namespace Logging.Service.API.IntegrationTests.Controllers
 {
@@ -28,8 +28,9 @@ namespace Logging.Service.API.IntegrationTests.Controllers
         public async Task Upsert_StateUnderTest_ExpectedBehavior()
         {
             // Arrange
-            //var controller = new MessageLogController(Mock.Of<Logger<MessageLogController>>(), Mock.Of<IMessageLogHandler>());
-            var messageLogController = new MessageLogController(Mock.Of<Logger<MessageLogController>>(), Mock.Of<IMessageLogHandler>());
+            var api = new ApiWebApplicationFactory();
+            var messageLogHandler = Mock.Of<IMessageLogHandler>();
+            var messageLogController = new MessageLogController(Mock.Of<ILogger<MessageLogController>>(), messageLogHandler);
             var testData = (new JsonObject
             {
                 ["Date"] = new DateTime(2019, 8, 1),
@@ -57,19 +58,16 @@ namespace Logging.Service.API.IntegrationTests.Controllers
             };
 
             // Act
-            var result = await messageLogController.Upsert(
-                messageLogRequest,
-                CancellationToken.None);
+            //var result = await messageLogController.Upsert(
+            //    messageLogRequest,
+            //    CancellationToken.None);
+            //var result = await api.CreateClient()
+            //    .PostAsync("/MessageLogs/Upsert", messageLogRequest, CancellationToken.None).Result;
+            var result = await api.CreateClient()
+                .PostAsJsonAsync("/MessageLogs", messageLogRequest, CancellationToken.None);
 
             // Assert
-            result.Should().BeGreaterThan(0);
-        }
-
-        [Fact]
-        public async Task TestTestTest()
-        {
-            await using var application = new WebApplicationFactory<Program>();
-
+            result.Should().NotBeNull();
         }
     }
 }
