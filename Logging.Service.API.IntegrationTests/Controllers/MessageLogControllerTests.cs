@@ -1,4 +1,5 @@
-﻿using System.Net.Http.Json;
+﻿using System.Net;
+using System.Net.Http.Json;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using FluentAssertions;
@@ -8,12 +9,14 @@ using Logging.Service.API.IntegrationTests.TestFramework;
 
 namespace Logging.Service.API.IntegrationTests.Controllers
 {
-    public class MessageLogControllerTests
+    public class MessageLogControllerTests : IClassFixture<ApiWebApplicationFactory>
     {
+        private readonly ApiWebApplicationFactory _fixture;
         private readonly Faker _faker;
 
-        public MessageLogControllerTests()
+        public MessageLogControllerTests(ApiWebApplicationFactory fixture)
         {
+            _fixture = fixture;
             _faker = new Faker();
         }
 
@@ -21,7 +24,6 @@ namespace Logging.Service.API.IntegrationTests.Controllers
         public async Task Upsert_StateUnderTest_ExpectedBehavior()
         {
             // Arrange
-            var api = new ApiWebApplicationFactory();
             var messageLog = (new JsonObject
             {
                 ["MessageId"] = _faker.Random.AlphaNumeric(10),
@@ -45,11 +47,12 @@ namespace Logging.Service.API.IntegrationTests.Controllers
             };
 
             // Act
-            var result = await api.CreateClient()
+            var result = await _fixture.CreateClient()
                 .PostAsJsonAsync("/MessageLogs", messageLogRequest, CancellationToken.None);
 
             // Assert
             result.Should().NotBeNull();
+            result.StatusCode.Should().Be(HttpStatusCode.OK);
         }
     }
 }
