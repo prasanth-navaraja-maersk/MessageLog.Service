@@ -5,6 +5,9 @@ using FluentAssertions;
 using Logging.Service.Application.Requests;
 using Bogus;
 using Logging.Service.API.IntegrationTests.TestFramework;
+using NBomber.Contracts;
+using NBomber.Contracts.Stats;
+using NBomber.CSharp;
 
 namespace Logging.Service.API.IntegrationTests.Controllers
 {
@@ -58,11 +61,29 @@ namespace Logging.Service.API.IntegrationTests.Controllers
             //    CancellationToken.None);
             //var result = await api.CreateClient()
             //    .PostAsync("/MessageLogs/Upsert", messageLogRequest, CancellationToken.None).Result;
-            var result = await api.CreateClient()
-                .PostAsJsonAsync("/ErrorLogs", errorLogRequest, CancellationToken.None);
+            //var result = await api.CreateClient()
+            //    .PostAsJsonAsync("/ErrorLogs", errorLogRequest, CancellationToken.None);
+
+            var step = Step.Create("Upsert_Error_Logs", async context =>
+            {
+                var resp = await api.CreateClient()
+                    .PostAsJsonAsync("/ErrorLogs", errorLogRequest, CancellationToken.None);
+                return Response.Ok();
+            });
+
+            var scenario = ScenarioBuilder
+                .CreateScenario("Error_Logs", step)
+                .WithWarmUpDuration(TimeSpan.FromSeconds(5))
+                .WithLoadSimulations(
+                    Simulation.InjectPerSec(rate: 100, during: TimeSpan.FromSeconds(30)));
+
+            var stats = NBomberRunner
+                .RegisterScenarios(scenario)
+                .WithReportFormats(ReportFormat.Html, ReportFormat.Md)
+                .Run();
 
             // Assert
-            result.Should().NotBeNull();
+            stats.Should().NotBeNull();
         }
     }
 }
