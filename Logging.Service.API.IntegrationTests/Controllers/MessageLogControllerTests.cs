@@ -1,15 +1,8 @@
-﻿using System.Net.Http.Headers;
-using System.Net.Http.Json;
-using Logging.Service.API.Controllers;
-using Logging.Service.Application;
-using Microsoft.Extensions.Logging;
+﻿using System.Net.Http.Json;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using FluentAssertions;
 using Logging.Service.Application.Requests;
-using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.VisualStudio.TestPlatform.TestHost;
-using Moq;
 using Bogus;
 using Logging.Service.API.IntegrationTests.TestFramework;
 
@@ -29,27 +22,21 @@ namespace Logging.Service.API.IntegrationTests.Controllers
         {
             // Arrange
             var api = new ApiWebApplicationFactory();
-            var messageLogHandler = Mock.Of<IMessageLogHandler>();
-            var messageLogController = new MessageLogController(Mock.Of<ILogger<MessageLogController>>(), messageLogHandler);
-            var testData = (new JsonObject
+            var messageLog = (new JsonObject
             {
-                ["Date"] = new DateTime(2019, 8, 1),
-                ["Temperature"] = 25,
-                ["Summary"] = "Hot",
-                ["DatesAvailable"] = new JsonArray(
-                    new DateTime(2019, 8, 1), new DateTime(2019, 8, 2)),
-                ["TemperatureRanges"] = new JsonObject
-                {
-                    ["Cold"] = new JsonObject
-                    {
-                        ["High"] = 20,
-                        ["Low"] = -10
-                    }
-                },
-                ["SummaryWords"] = new JsonArray("Cool", "Windy", "Humid")
+                ["MessageId"] = _faker.Random.AlphaNumeric(10),
+                ["StandardAlphaCarrierCode"] = _faker.Random.AlphaNumeric(5),
+                ["CustomerCode"] = _faker.Random.AlphaNumeric(4),
+                ["VendorName"] = _faker.Random.AlphaNumeric(10),
+                ["InvoiceNumber"] = _faker.Random.AlphaNumeric(10),
+                ["Status"] = _faker.Random.AlphaNumeric(10),
+                ["IsError"] = _faker.Random.Bool(),
+                ["Stage"] = _faker.Random.AlphaNumeric(10),
+                ["Source"] = _faker.Random.AlphaNumeric(10),
+                ["Destination"] = _faker.Random.AlphaNumeric(10),
             }).ToJsonString();
 
-            using var msgLogs = JsonDocument.Parse(testData);
+            using var msgLogs = JsonDocument.Parse(messageLog);
             var messageLogRequest = new MessageLogRequest
             {
                 MessageId = _faker.Random.AlphaNumeric(10),
@@ -58,11 +45,6 @@ namespace Logging.Service.API.IntegrationTests.Controllers
             };
 
             // Act
-            //var result = await messageLogController.Upsert(
-            //    messageLogRequest,
-            //    CancellationToken.None);
-            //var result = await api.CreateClient()
-            //    .PostAsync("/MessageLogs/Upsert", messageLogRequest, CancellationToken.None).Result;
             var result = await api.CreateClient()
                 .PostAsJsonAsync("/MessageLogs", messageLogRequest, CancellationToken.None);
 
