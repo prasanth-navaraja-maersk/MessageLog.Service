@@ -11,12 +11,14 @@ using NBomber.CSharp;
 
 namespace Logging.Service.API.IntegrationTests.Controllers
 {
-    public class ErrorLogControllerTests
+    public class ErrorLogControllerTests : IClassFixture<ApiWebApplicationFactory>
     {
+        private readonly ApiWebApplicationFactory _fixture;
         private readonly Faker _faker;
 
-        public ErrorLogControllerTests()
+        public ErrorLogControllerTests(ApiWebApplicationFactory fixture)
         {
+            _fixture = fixture;
             _faker = new Faker();
         }
 
@@ -24,9 +26,6 @@ namespace Logging.Service.API.IntegrationTests.Controllers
         public async Task Upsert_ErrorLogs()
         {
             // Arrange
-            var api = new ApiWebApplicationFactory();
-            //var errorLogHandler = Mock.Of<IErrorLogHandler>();
-            //var errorLogController = new ErrorLogController(Mock.Of<ILogger<ErrorLogController>>(), errorLogHandler);
             var errorLogs = (new JsonObject
             {
                 ["Errors"] = new JsonArray(
@@ -56,17 +55,10 @@ namespace Logging.Service.API.IntegrationTests.Controllers
             };
 
             // Act
-            //var result = await messageLogController.Upsert(
-            //    messageLogRequest,
-            //    CancellationToken.None);
-            //var result = await api.CreateClient()
-            //    .PostAsync("/MessageLogs/Upsert", messageLogRequest, CancellationToken.None).Result;
-            //var result = await api.CreateClient()
-            //    .PostAsJsonAsync("/ErrorLogs", errorLogRequest, CancellationToken.None);
-
+            
             var step = Step.Create("Upsert_Error_Logs", async context =>
             {
-                var resp = await api.CreateClient()
+                var resp = await _fixture.CreateClient()
                     .PostAsJsonAsync("/ErrorLogs", errorLogRequest, CancellationToken.None);
                 return Response.Ok();
             });

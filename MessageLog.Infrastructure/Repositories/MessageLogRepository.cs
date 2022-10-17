@@ -17,7 +17,9 @@ public class MessageLogRepository : AsyncRepository<Entities.MessageLog, Logging
     {
         long id = 0;
         var log = await _uow.DbContext.MessageLog
-            .FirstOrDefaultAsync(X => X.MessageId == messageLog.MessageId && X.MessageType == messageLog.MessageType, cancellationToken);
+            .FirstOrDefaultAsync(x => x.MessageId == messageLog.MessageId 
+                                      && x.MessageType == messageLog.MessageType, 
+                cancellationToken);
         if (log == null)
         {
             var entity = await _uow.DbContext.MessageLog.AddAsync(messageLog, cancellationToken);

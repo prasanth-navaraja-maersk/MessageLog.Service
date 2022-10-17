@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.TestHost;
 
 namespace Logging.Service.API.IntegrationTests.TestFramework;
 
-internal class ApiWebApplicationFactory : WebApplicationFactory<Program>
+public class ApiWebApplicationFactory : WebApplicationFactory<Program>
 {
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
