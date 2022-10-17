@@ -5,9 +5,9 @@ using FluentAssertions;
 using Logging.Service.Application.Requests;
 using Bogus;
 using Logging.Service.API.IntegrationTests.TestFramework;
-using NBomber.Contracts;
 using NBomber.Contracts.Stats;
 using NBomber.CSharp;
+using NBomber.Plugins.Http.CSharp;
 
 namespace Logging.Service.API.IntegrationTests.Controllers
 {
@@ -56,18 +56,19 @@ namespace Logging.Service.API.IntegrationTests.Controllers
 
             // Act
             
-            var step = Step.Create("Upsert_Error_Logs", async context =>
+            var step = Step.Create("Upsert_Error_Logs", async _ =>
             {
                 var resp = await _fixture.CreateClient()
                     .PostAsJsonAsync("/ErrorLogs", errorLogRequest, CancellationToken.None);
-                return Response.Ok();
+                
+                return resp.ToNBomberResponse();
             });
 
             var scenario = ScenarioBuilder
                 .CreateScenario("Error_Logs", step)
-                .WithWarmUpDuration(TimeSpan.FromSeconds(5))
+                .WithoutWarmUp()
                 .WithLoadSimulations(
-                    Simulation.InjectPerSec(rate: 100, during: TimeSpan.FromSeconds(30)));
+                    Simulation.KeepConstant(copies: 10, during: TimeSpan.FromSeconds(10)));
 
             var stats = NBomberRunner
                 .RegisterScenarios(scenario)
@@ -76,6 +77,13 @@ namespace Logging.Service.API.IntegrationTests.Controllers
 
             // Assert
             stats.Should().NotBeNull();
+            var stepStats = stats.ScenarioStats[0].StepStats[0];
+
+            stepStats.Ok.Request.Count.Should().BeGreaterThan(1000);
+            stepStats.Ok.Request.RPS.Should().BeGreaterThan(100);
+            stepStats.Ok.Latency.Percent75.Should().BeLessOrEqualTo(100);
+            stepStats.Ok.DataTransfer.MinBytes.Should().Be(4);
+            stepStats.Ok.DataTransfer.AllBytes.Should().BeGreaterOrEqualTo(14000L);
         }
     }
 }
