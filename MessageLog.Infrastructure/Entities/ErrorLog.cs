@@ -1,9 +1,17 @@
-﻿namespace MessageLog.Infrastructure.Entities;
+﻿using System.Text.Json;
+using Finance.Common.Database.Relational.Interfaces.Entities;
 
-public class ErrorLog
+namespace MessageLog.Infrastructure.Entities;
+
+public class ErrorLog : IEntity<long>, ISystemCreateDate, ISystemModifiedDate
 {
     public long Id { get; set; }
-    public int? ExternalIdentifier { get; set; }
-    public ErrorLogDoc ErrorLogs { get; set; } //ToDo
+    public string  LogMessageId { get; set; }
+    public string  LogMessageType { get; set; }
+    public JsonDocument ErrorLogs { get; set; }
     public DateTime? SystemCreateDate { get; set; }
+    public DateTime? SystemModifiedDate { get; set; }
+
+    public void Dispose() => ErrorLogs?.Dispose();
+
 }
