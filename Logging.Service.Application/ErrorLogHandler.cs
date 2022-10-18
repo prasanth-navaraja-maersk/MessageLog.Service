@@ -1,5 +1,4 @@
-﻿using System.Runtime.InteropServices.ComTypes;
-using Logging.Service.Application.Requests;
+﻿using Logging.Service.Application.Requests;
 using MessageLog.Infrastructure.Repositories;
 
 namespace Logging.Service.Application;

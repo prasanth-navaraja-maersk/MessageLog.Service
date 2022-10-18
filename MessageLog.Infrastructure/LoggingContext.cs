@@ -17,11 +17,12 @@ namespace MessageLog.Infrastructure
         }
 
         public DbSet<Entities.MessageLog> MessageLog { get; set; }
+        public DbSet<MessageLogDoc> MessageLogDoc { get; set; }
         public DbSet<ErrorLog> ErrorLog { get; set; }
+        public DbSet<ErrorLogDoc> ErrorLogDoc { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder options)
-            => options.UseNpgsql(_connectionString);
-        //.LogTo(Console.WriteLine, LogLevel.Information);
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+            => optionsBuilder.UseNpgsql(_connectionString);
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -33,6 +34,11 @@ namespace MessageLog.Infrastructure
             modelBuilder.Entity<ErrorLog>()
                 .Property(b => b.ErrorLogs)
                 .HasColumnType("jsonb");
+
+            modelBuilder.Entity<MessageLogDoc>()
+                .ToTable(nameof(MessageLogDoc));
+            modelBuilder.Entity<ErrorLogDoc>()
+                .ToTable(nameof(ErrorLogDoc));
         }
     }
 }

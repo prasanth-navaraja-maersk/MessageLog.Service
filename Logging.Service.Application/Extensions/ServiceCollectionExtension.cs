@@ -8,5 +8,7 @@ public static class ServiceCollectionExtension
     {
         serviceCollection.AddScoped<IMessageLogHandler, MessageLogHandler>();
         serviceCollection.AddScoped<IErrorLogHandler, ErrorLogHandler>();
+        serviceCollection.AddScoped<IMessageLogDocHandler, MessageLogDocHandler>();
+        //serviceCollection.AddScoped<IErrorLogDocHandler, ErrorLogDocHandler>();
     }
 }
