@@ -9,81 +9,79 @@ using NBomber.Contracts.Stats;
 using NBomber.CSharp;
 using NBomber.Plugins.Http.CSharp;
 
-namespace Logging.Service.API.IntegrationTests.Controllers
+namespace Logging.Service.API.IntegrationTests.Controllers;
+
+public class ErrorLogControllerTests : IClassFixture<ApiWebApplicationFactory>
 {
-    public class ErrorLogControllerTests : IClassFixture<ApiWebApplicationFactory>
+    private readonly ApiWebApplicationFactory _fixture;
+    private readonly Faker _faker;
+
+    public ErrorLogControllerTests(ApiWebApplicationFactory fixture)
     {
-        private readonly ApiWebApplicationFactory _fixture;
-        private readonly Faker _faker;
+        _fixture = fixture;
+        _faker = new Faker();
+    }
 
-        public ErrorLogControllerTests(ApiWebApplicationFactory fixture)
+    [Fact]
+    public void Upsert_ErrorLogs()
+    {
+        // Arrange
+        var errorLogs = (new JsonObject
         {
-            _fixture = fixture;
-            _faker = new Faker();
-        }
+            ["Errors"] = new JsonArray(
+                new JsonObject
+                {
+                    ["ErrorCategory"] = "Operational", 
+                    ["ErrorMessage"] = _faker.Random.AlphaNumeric(50)
+                },
+                new JsonObject
+                {
+                    ["ErrorCategory"] = "Configurational",
+                    ["ErrorMessage"] = _faker.Random.AlphaNumeric(50)
+                },
+                new JsonObject
+                {
+                    ["ErrorCategory"] = "Technical",
+                    ["ErrorMessage"] = _faker.Random.AlphaNumeric(50)
+                })
+        }).ToJsonString();
 
-        [Fact]
-        public async Task Upsert_ErrorLogs()
+        using var errors = JsonDocument.Parse(errorLogs);
+        var errorLogRequest = new ErrorLogRequest
         {
-            // Arrange
-            var errorLogs = (new JsonObject
-            {
-                ["Errors"] = new JsonArray(
-                    new JsonObject
-                    {
-                        ["ErrorCategory"] = "Operational", 
-                        ["ErrorMessage"] = _faker.Random.AlphaNumeric(50)
-                    },
-                    new JsonObject
-                    {
-                        ["ErrorCategory"] = "Configurational",
-                        ["ErrorMessage"] = _faker.Random.AlphaNumeric(50)
-                    },
-                    new JsonObject
-                    {
-                        ["ErrorCategory"] = "Technical",
-                        ["ErrorMessage"] = _faker.Random.AlphaNumeric(50)
-                    })
-            }).ToJsonString();
+            LogMessageId = _faker.Random.AlphaNumeric(10),
+            LogMessageType = _faker.Random.AlphaNumeric(10),
+            ErrorLogs = errors
+        };
 
-            using var errors = JsonDocument.Parse(errorLogs);
-            var errorLogRequest = new ErrorLogRequest
-            {
-                LogMessageId = _faker.Random.AlphaNumeric(10),
-                LogMessageType = _faker.Random.AlphaNumeric(10),
-                ErrorLogs = errors
-            };
-
-            // Act
-            
-            var step = Step.Create("Upsert_Error_Logs", async _ =>
-            {
-                var resp = await _fixture.CreateClient()
-                    .PostAsJsonAsync("/ErrorLogs", errorLogRequest, CancellationToken.None);
+        var step = Step.Create("Upsert_Error_Logs", async _ =>
+        {
+            var resp = await _fixture.CreateClient()
+                .PostAsJsonAsync("/ErrorLogs", errorLogRequest, CancellationToken.None);
                 
-                return resp.ToNBomberResponse();
-            });
+            return resp.ToNBomberResponse();
+        });
 
-            var scenario = ScenarioBuilder
-                .CreateScenario("Error_Logs", step)
-                .WithoutWarmUp()
-                .WithLoadSimulations(
-                    Simulation.KeepConstant(copies: 10, during: TimeSpan.FromSeconds(10)));
+        var scenario = ScenarioBuilder
+            .CreateScenario("Error_Logs", step)
+            .WithoutWarmUp()
+            .WithLoadSimulations(
+                Simulation.KeepConstant(copies: 10, during: TimeSpan.FromSeconds(10)));
 
-            var stats = NBomberRunner
-                .RegisterScenarios(scenario)
-                .WithReportFormats(ReportFormat.Html, ReportFormat.Md)
-                .Run();
+        // Act
+        var stats = NBomberRunner
+            .RegisterScenarios(scenario)
+            .WithReportFormats(ReportFormat.Html)
+            .Run();
 
-            // Assert
-            stats.Should().NotBeNull();
-            var stepStats = stats.ScenarioStats[0].StepStats[0];
+        // Assert
+        stats.Should().NotBeNull();
+        var stepStats = stats.ScenarioStats[0].StepStats[0];
 
-            stepStats.Ok.Request.Count.Should().BeGreaterThan(1000);
-            stepStats.Ok.Request.RPS.Should().BeGreaterThan(100);
-            stepStats.Ok.Latency.Percent75.Should().BeLessOrEqualTo(100);
-            stepStats.Ok.DataTransfer.MinBytes.Should().Be(4);
-            stepStats.Ok.DataTransfer.AllBytes.Should().BeGreaterOrEqualTo(14000L);
-        }
+        stepStats.Ok.Request.Count.Should().BeGreaterThan(1000);
+        stepStats.Ok.Request.RPS.Should().BeGreaterThan(100);
+        stepStats.Ok.Latency.Percent75.Should().BeLessOrEqualTo(100);
+        stepStats.Ok.DataTransfer.MinBytes.Should().Be(4);
+        stepStats.Ok.DataTransfer.AllBytes.Should().BeGreaterOrEqualTo(14000L);
     }
 }
