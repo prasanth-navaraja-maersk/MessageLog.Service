@@ -73,7 +73,7 @@ public class MessageLogDocControllerTests : IClassFixture<ApiWebApplicationFacto
         stepStats.Ok.Request.Count.Should().BeGreaterThan(1000);
         stepStats.Ok.Request.RPS.Should().BeGreaterThan(100);
         stepStats.Ok.Latency.Percent75.Should().BeLessOrEqualTo(100);
-        stepStats.Ok.DataTransfer.MinBytes.Should().Be(2);
+        stepStats.Ok.DataTransfer.MinBytes.Should().BeGreaterThanOrEqualTo(1);
         stepStats.Ok.DataTransfer.AllBytes.Should().BeGreaterOrEqualTo(1000L);
     }
 
@@ -104,6 +104,6 @@ public class MessageLogDocControllerTests : IClassFixture<ApiWebApplicationFacto
             .PostAsync("/MessageLogDocs", httpContent, CancellationToken.None);
 
         // Assert
-        result.Should().NotBeNull();
+        result.Should().BeSuccessful();
     }
 }
