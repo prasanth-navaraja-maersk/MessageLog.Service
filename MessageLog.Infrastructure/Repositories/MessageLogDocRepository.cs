@@ -16,30 +16,32 @@ public class MessageLogDocRepository : AsyncRepository<Entities.MessageLog, Logg
 
     public async Task<long> UpsertMessageLogDocsAsync(MessageLogDoc messageLog, CancellationToken cancellationToken)
     {
-        long id = 0;
-        try
+        long id;
+        var log = await _uow.DbContext.MessageLogDoc
+            .FirstOrDefaultAsync(x => x.MessageId == messageLog.MessageId
+                                      && x.MessageType == messageLog.MessageType,
+                cancellationToken);
+        if (log == null)
         {
-            var log = await _uow.DbContext.MessageLogDoc
-                .FirstOrDefaultAsync(x => x.MessageId == messageLog.MessageId
-                                          && x.MessageType == messageLog.MessageType,
-                    cancellationToken);
-            if (log == null)
-            {
-                var entity = await _uow.DbContext.MessageLogDoc.AddAsync(messageLog, cancellationToken);
-                await _uow.DbContext.SaveChangesAsync(cancellationToken);
-                id = entity.Entity.Id;
-            }
-            else
-            {
-                _uow.DbContext.MessageLogDoc.Update(log);
-                await _uow.DbContext.SaveChangesAsync(cancellationToken);
-                id = log!.Id;
-            }
+            var entity = await _uow.DbContext.MessageLogDoc.AddAsync(messageLog, cancellationToken);
+            await _uow.DbContext.SaveChangesAsync(cancellationToken);
+            id = entity.Entity.Id;
         }
-        catch (Exception e)
+        else
         {
+            _uow.DbContext.MessageLogDoc.Update(log);
+            await _uow.DbContext.SaveChangesAsync(cancellationToken);
+            id = log!.Id;
         }
 
         return id;
     }
+
+    public async Task<IEnumerable<MessageLogDoc>> GetMessageLogDocsAsync(CancellationToken cancellationToken)
+        => await _uow.DbContext.MessageLogDoc.ToListAsync(cancellationToken: cancellationToken);
+    
+    public async Task<IEnumerable<MessageLogDoc>> GetMessageLogDocsByMessageTypeAsync(string messageType, CancellationToken cancellationToken)
+        => await _uow.DbContext.MessageLogDoc
+            .Where(x => x.MessageType == messageType)
+            .ToListAsync(cancellationToken: cancellationToken);
 }
