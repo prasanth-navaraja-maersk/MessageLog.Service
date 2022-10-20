@@ -4,10 +4,12 @@ using System.Text.Json.Nodes;
 using FluentAssertions;
 using Logging.Service.Application.Requests;
 using Bogus;
+using FizzWare.NBuilder;
 using Logging.Service.API.IntegrationTests.TestFramework;
 using NBomber.Contracts.Stats;
 using NBomber.CSharp;
 using NBomber.Plugins.Http.CSharp;
+using Feed = NBomber.FSharp.Feed;
 
 namespace Logging.Service.API.IntegrationTests.Controllers;
 
@@ -15,43 +17,25 @@ public class MessageLogControllerTests : IClassFixture<ApiWebApplicationFactory>
 {
     private readonly ApiWebApplicationFactory _fixture;
     private readonly Faker _faker;
+    private readonly Builder _builder;
 
     public MessageLogControllerTests(ApiWebApplicationFactory fixture)
     {
         _fixture = fixture;
         _faker = new Faker();
+        _builder = new Builder();
     }
 
     [Fact]
     public void Upsert_StateUnderTest_ExpectedBehavior()
     {
         // Arrange
-        var messageLog = (new JsonObject
-        {
-            ["MessageId"] = _faker.Random.AlphaNumeric(10),
-            ["StandardAlphaCarrierCode"] = _faker.Random.AlphaNumeric(5),
-            ["CustomerCode"] = _faker.Random.AlphaNumeric(4),
-            ["VendorName"] = _faker.Random.AlphaNumeric(10),
-            ["InvoiceNumber"] = _faker.Random.AlphaNumeric(10),
-            ["Status"] = _faker.Random.AlphaNumeric(10),
-            ["IsError"] = _faker.Random.Bool(),
-            ["Stage"] = _faker.Random.AlphaNumeric(10),
-            ["Source"] = _faker.Random.AlphaNumeric(10),
-            ["Destination"] = _faker.Random.AlphaNumeric(10),
-        }).ToJsonString();
-
-        using var msgLogs = JsonDocument.Parse(messageLog);
-        var messageLogRequest = new MessageLogRequest
-        {
-            MessageId = _faker.Random.AlphaNumeric(10),
-            MessageType = _faker.Random.AlphaNumeric(10),
-            MessageLogs = msgLogs
-        };
-
-        var step = Step.Create("Upsert_Message_Logs", async _ =>
+        var messageLogRequests = GetMessageLogRequest();
+        var dataFeed = Feed.createCircular("requests", messageLogRequests);
+        var step = Step.Create("Upsert_Message_Logs", feed: dataFeed, async context =>
         {
             var resp = await _fixture.CreateClient()
-                .PostAsJsonAsync("/MessageLogs", messageLogRequest, CancellationToken.None);
+                .PostAsJsonAsync("/MessageLogs", context.FeedItem, CancellationToken.None);
 
             return resp.ToNBomberResponse();
         });
@@ -83,33 +67,13 @@ public class MessageLogControllerTests : IClassFixture<ApiWebApplicationFactory>
     public void Get_MessageLogs_LoadTest()
     {
         // Arrange
-        var messageLog = (new JsonObject
-        {
-            ["MessageId"] = _faker.Random.AlphaNumeric(10),
-            ["StandardAlphaCarrierCode"] = _faker.Random.AlphaNumeric(5),
-            ["CustomerCode"] = _faker.Random.AlphaNumeric(4),
-            ["VendorName"] = _faker.Random.AlphaNumeric(10),
-            ["InvoiceNumber"] = _faker.Random.AlphaNumeric(10),
-            ["Status"] = _faker.Random.AlphaNumeric(10),
-            ["IsError"] = _faker.Random.Bool(),
-            ["Stage"] = _faker.Random.AlphaNumeric(10),
-            ["Source"] = _faker.Random.AlphaNumeric(10),
-            ["Destination"] = _faker.Random.AlphaNumeric(10),
-        }).ToJsonString();
+        var requests = GetMessageLogRequest(1000);
+        var dataFeed = Feed.createCircular("requests", requests);
 
-        using var msgLogs = JsonDocument.Parse(messageLog);
-        var messageLogRequest = new MessageLogRequest
-        {
-            MessageId = _faker.Random.AlphaNumeric(10),
-            MessageType = _faker.Random.AlphaNumeric(10),
-            MessageLogs = msgLogs
-        };
-
-
-        var stepInsert = Step.Create("Upsert_Message_Logs", async _ =>
+        var stepInsert = Step.Create("Upsert_Message_Logs", feed: dataFeed, async context =>
         {
             var resp = await _fixture.CreateClient()
-                .PostAsJsonAsync("/MessageLogs", messageLogRequest, CancellationToken.None);
+                .PostAsJsonAsync("/MessageLogs", context.FeedItem, CancellationToken.None);
 
             return resp.ToNBomberResponse();
         });
@@ -149,6 +113,31 @@ public class MessageLogControllerTests : IClassFixture<ApiWebApplicationFactory>
     public async Task Get_MessageLogs_IntegrationTest()
     {
         // Arrange
+        var messageLogRequest = GetMessageLogRequest();
+
+        // Act
+        _ = await _fixture.CreateClient()
+            .PostAsJsonAsync("/MessageLogs", messageLogRequest, CancellationToken.None);
+
+        var result = await _fixture.CreateClient().GetAsync("/MessageLogs", CancellationToken.None);
+
+        // Assert
+        result.Should().BeSuccessful();
+    }
+
+    private IEnumerable<MessageLogRequest> GetMessageLogRequest(int requestCount = 500)
+    {
+        var requests = _builder.CreateListOfSize<MessageLogRequest>(requestCount).All()
+            .With(x => x.MessageId = _faker.Random.AlphaNumeric(10))
+            .With(x => x.MessageType = _faker.Random.AlphaNumeric(10))
+            .With(x => x.MessageLogs = CreateMessageLogJson())
+            .Build();
+
+        return requests;
+    }
+
+    private JsonDocument CreateMessageLogJson()
+    {
         var messageLog = (new JsonObject
         {
             ["MessageId"] = _faker.Random.AlphaNumeric(10),
@@ -163,21 +152,7 @@ public class MessageLogControllerTests : IClassFixture<ApiWebApplicationFactory>
             ["Destination"] = _faker.Random.AlphaNumeric(10),
         }).ToJsonString();
 
-        using var msgLogs = JsonDocument.Parse(messageLog);
-        var messageLogRequest = new MessageLogRequest
-        {
-            MessageId = _faker.Random.AlphaNumeric(10),
-            MessageType = _faker.Random.AlphaNumeric(10),
-            MessageLogs = msgLogs
-        };
-
-        // Act
-        _ = await _fixture.CreateClient()
-            .PostAsJsonAsync("/MessageLogs", messageLogRequest, CancellationToken.None);
-
-        var result = await _fixture.CreateClient().GetAsync("/MessageLogs", CancellationToken.None);
-
-        // Assert
-        result.Should().BeSuccessful();
+        var msgLogs = JsonDocument.Parse(messageLog);
+        return msgLogs;
     }
 }
