@@ -9,7 +9,6 @@ using Logging.Service.API.IntegrationTests.TestFramework;
 using NBomber.Contracts.Stats;
 using NBomber.CSharp;
 using NBomber.Plugins.Http.CSharp;
-using Feed = NBomber.FSharp.Feed;
 
 namespace Logging.Service.API.IntegrationTests.Controllers;
 
@@ -31,7 +30,7 @@ public class MessageLogControllerTests : IClassFixture<ApiWebApplicationFactory>
     {
         // Arrange
         var messageLogRequests = GetMessageLogRequest();
-        var dataFeed = Feed.createCircular("requests", messageLogRequests);
+        var dataFeed = Feed.CreateCircular("requests", messageLogRequests);
         var step = Step.Create("Upsert_Message_Logs", feed: dataFeed, async context =>
         {
             var resp = await _fixture.CreateClient()
@@ -68,7 +67,7 @@ public class MessageLogControllerTests : IClassFixture<ApiWebApplicationFactory>
     {
         // Arrange
         var requests = GetMessageLogRequest(1000);
-        var dataFeed = Feed.createCircular("requests", requests);
+        var dataFeed = Feed.CreateCircular("requests", requests);
 
         var stepInsert = Step.Create("Upsert_Message_Logs", feed: dataFeed, async context =>
         {
