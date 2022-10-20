@@ -33,8 +33,8 @@ public class MessageLogDocController : ControllerBase
     public async Task<IEnumerable<MessageLogDoc>> GetMessageLogDocsByMessageTypeAsync(string messageType, CancellationToken cancellationToken) 
         => await _messageLogHandler.GetMessageLogDocsByMessageTypeAsync(messageType, cancellationToken);
     
-    //[HttpPost]
+    [HttpDelete]
     //[Route("Delete")]
-    //public async Task<IEnumerable<MessageLogDoc>> DeleteMessageLogDocsAsync(CancellationToken cancellationToken) 
-    //    => await _messageLogHandler.GetMessageLogDocsByMessageTypeAsync(cancellationToken);
+    public void DeleteMessageLogDocsAsync() 
+        => _messageLogHandler.ClearMessageLogDocs();
 }

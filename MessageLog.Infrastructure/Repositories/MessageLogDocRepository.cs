@@ -44,4 +44,10 @@ public class MessageLogDocRepository : AsyncRepository<Entities.MessageLog, Logg
         => await _uow.DbContext.MessageLogDoc
             .Where(x => x.MessageType == messageType)
             .ToListAsync(cancellationToken: cancellationToken);
+
+    public void ClearMessageLogDocs()
+    {
+        _uow.DbContext.MessageLogDoc.RemoveRange(_uow.DbContext.MessageLogDoc);
+        _uow.DbContext.SaveChanges();
+    }
 }

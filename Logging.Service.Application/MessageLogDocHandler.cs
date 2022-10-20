@@ -37,4 +37,7 @@ public class MessageLogDocHandler : IMessageLogDocHandler
     
     public async Task<IEnumerable<MessageLogDoc>> GetMessageLogDocsByMessageTypeAsync(string messageType, CancellationToken cancellationToken) 
         => await _repository.GetMessageLogDocsByMessageTypeAsync(messageType, cancellationToken);
+
+    public void ClearMessageLogDocs() 
+        => _repository.ClearMessageLogDocs();
 }

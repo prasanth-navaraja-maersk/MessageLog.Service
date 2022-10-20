@@ -12,7 +12,6 @@ using MessageLog.Infrastructure.Entities;
 using NBomber.Contracts;
 using System.Net.Http.Json;
 using System.Web;
-using System.Net.Http;
 
 namespace Logging.Service.API.IntegrationTests.Controllers;
 
@@ -54,7 +53,12 @@ public class MessageLogDocControllerTests : IClassFixture<ApiWebApplicationFacto
             .CreateScenario("Message_Logs_Doc", step)
             .WithoutWarmUp()
             .WithLoadSimulations(
-                Simulation.KeepConstant(copies: 10, during: TimeSpan.FromSeconds(10)));
+                Simulation.KeepConstant(copies: 10, during: TimeSpan.FromSeconds(10)))
+            .WithClean(async _ =>
+            {
+                await _fixture.CreateClient()
+                    .DeleteAsync("/MessageLogDocs");
+            }); ;
 
         // Act
         var stats = NBomberRunner
@@ -102,7 +106,12 @@ public class MessageLogDocControllerTests : IClassFixture<ApiWebApplicationFacto
             .CreateScenario("Message_Logs_Doc", upsertStep, getStep)
             .WithoutWarmUp()
             .WithLoadSimulations(
-                Simulation.KeepConstant(copies: 10, during: TimeSpan.FromSeconds(10)));
+                Simulation.KeepConstant(copies: 10, during: TimeSpan.FromSeconds(10)))
+            .WithClean(async _ =>
+            {
+                await _fixture.CreateClient()
+                    .DeleteAsync("/MessageLogDocs");
+            }); ;
 
         // Act
         var stats = NBomberRunner
@@ -160,7 +169,12 @@ public class MessageLogDocControllerTests : IClassFixture<ApiWebApplicationFacto
             .CreateScenario("GetByType_Message_Logs_Doc", upsertStep, getStep)
             .WithoutWarmUp()
             .WithLoadSimulations(
-                Simulation.KeepConstant(copies: 10, during: TimeSpan.FromSeconds(10)));
+                Simulation.KeepConstant(copies: 10, during: TimeSpan.FromSeconds(10)))
+            .WithClean(async _ =>
+            {
+                await _fixture.CreateClient()
+                    .DeleteAsync("/MessageLogDocs");
+            });
 
         // Act
         var stats = NBomberRunner
@@ -241,10 +255,13 @@ public class MessageLogDocControllerTests : IClassFixture<ApiWebApplicationFacto
         _ = await _fixture.CreateClient()
             .PostAsync("/MessageLogDocs", httpContent, _cancellationToken);
         var result = await _fixture.CreateClient().GetAsync(url, CancellationToken.None);
+        var httpResponseMessage = await _fixture.CreateClient()
+            .DeleteAsync("/MessageLogDocs");
         var messageLogDocs = await result.Content.ReadFromJsonAsync<IEnumerable<MessageLogDoc>>();
         
         // Assert
         result.Should().BeSuccessful();
+        httpResponseMessage.Should().BeSuccessful();
         messageLogDocs.Should().NotBeNull();
     }
 }

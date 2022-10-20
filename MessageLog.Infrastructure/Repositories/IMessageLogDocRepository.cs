@@ -8,4 +8,6 @@ public interface IMessageLogDocRepository
     Task<IEnumerable<MessageLogDoc>> GetMessageLogDocsAsync(CancellationToken cancellationToken);
     Task<IEnumerable<MessageLogDoc>> GetMessageLogDocsByMessageTypeAsync(string messageType,
         CancellationToken cancellationToken);
+
+    void ClearMessageLogDocs();
 }

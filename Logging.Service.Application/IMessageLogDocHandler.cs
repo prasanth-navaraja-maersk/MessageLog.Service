@@ -10,4 +10,6 @@ public interface IMessageLogDocHandler
 
     Task<IEnumerable<MessageLogDoc>> GetMessageLogDocsByMessageTypeAsync(string messageType,
         CancellationToken cancellationToken);
+
+    void ClearMessageLogDocs();
 }
