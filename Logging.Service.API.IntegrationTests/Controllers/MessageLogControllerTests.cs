@@ -67,7 +67,7 @@ public class MessageLogControllerTests : IClassFixture<ApiWebApplicationFactory>
     {
         // Arrange
         var requests = GetMessageLogRequest(1000);
-        var dataFeed = Feed.CreateCircular("requests", requests);
+        var dataFeed = Feed.CreateRandom("requests", requests);
 
         var stepInsert = Step.Create("Upsert_Message_Logs", feed: dataFeed, async context =>
         {
@@ -101,7 +101,8 @@ public class MessageLogControllerTests : IClassFixture<ApiWebApplicationFactory>
         stats.Should().NotBeNull();
         var stepStats = stats.ScenarioStats[0].StepStats[0];
 
-        stepStats.Ok.Request.Count.Should().BeGreaterThan(1000);
+        stepStats.Fail.Request.Count.Should().Be(0);
+        //stepStats.Ok.Request.Count.Should().BeGreaterThan(1000);
         stepStats.Ok.Request.RPS.Should().BeGreaterThan(100);
         stepStats.Ok.Latency.Percent75.Should().BeLessOrEqualTo(100);
         stepStats.Ok.DataTransfer.MinBytes.Should().Be(2);
