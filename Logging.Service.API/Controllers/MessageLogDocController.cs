@@ -19,17 +19,22 @@ public class MessageLogDocController : ControllerBase
     }
 
     [HttpPost(Name = "UpsertDocs")]
-    public async Task<long> UpsertDocs(MessageLogDocRequest messageLogDocRequest, CancellationToken cancellationToken)
+    public async Task<long> UpsertDocsAsync(MessageLogDocRequest messageLogDocRequest, CancellationToken cancellationToken)
     {
-        return await _messageLogHandler.UpsertMessageLogDoc(messageLogDocRequest, cancellationToken);
+        return await _messageLogHandler.UpsertMessageLogDocAsync(messageLogDocRequest, cancellationToken);
     }
     
     [HttpGet]
-    public async Task<IEnumerable<MessageLogDoc>> GetMessageLogDocs(CancellationToken cancellationToken)
+    public async Task<IEnumerable<MessageLogDoc>> GetMessageLogDocsAsync(CancellationToken cancellationToken)
         => await _messageLogHandler.GetMessageLogDocAsync(cancellationToken);
     
     [HttpGet]
     [Route("MessageType")]
-    public async Task<IEnumerable<MessageLogDoc>> GetMessageLogDocsByMessageType(string messageType, CancellationToken cancellationToken) 
+    public async Task<IEnumerable<MessageLogDoc>> GetMessageLogDocsByMessageTypeAsync(string messageType, CancellationToken cancellationToken) 
         => await _messageLogHandler.GetMessageLogDocsByMessageTypeAsync(messageType, cancellationToken);
+    
+    //[HttpPost]
+    //[Route("Delete")]
+    //public async Task<IEnumerable<MessageLogDoc>> DeleteMessageLogDocsAsync(CancellationToken cancellationToken) 
+    //    => await _messageLogHandler.GetMessageLogDocsByMessageTypeAsync(cancellationToken);
 }

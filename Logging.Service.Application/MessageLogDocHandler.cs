@@ -13,7 +13,7 @@ public class MessageLogDocHandler : IMessageLogDocHandler
         _repository = repository;
     }
 
-    public async Task<long> UpsertMessageLogDoc(MessageLogDocRequest messageLogRequest, CancellationToken cancellationToken)
+    public async Task<long> UpsertMessageLogDocAsync(MessageLogDocRequest messageLogRequest, CancellationToken cancellationToken)
     {
         var messageLog = new MessageLogDoc
         {
