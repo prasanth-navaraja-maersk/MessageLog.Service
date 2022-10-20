@@ -22,5 +22,18 @@ namespace Logging.Service.API.Controllers
         {
             return await _messageLogHandler.UpsertMessageLog(messageLogRequest, cancellationToken);
         }
+
+        [HttpGet]
+        public async Task<IEnumerable<MessageLogRequest>> GetMessageLogsAsync(CancellationToken cancellationToken)
+        {
+            return await _messageLogHandler.GetMessageLogsAsync(cancellationToken);
+        }
+
+        [HttpGet]
+        [Route("/MessageLogs/MessageType")]
+        public async Task<IEnumerable<MessageLogRequest>> GetMessageLogsByMessageTypeAsync(string messageType, CancellationToken cancellationToken)
+        {
+            return await _messageLogHandler.GetMessageLogsAsync(cancellationToken);
+        }
     }
 }

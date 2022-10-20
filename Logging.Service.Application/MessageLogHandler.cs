@@ -23,4 +23,26 @@ public class MessageLogHandler : IMessageLogHandler
 
         return await _messageLogRepository.UpsertMessageLogs(messageLog, cancellationToken);
     }
+
+    public async Task<IEnumerable<MessageLogRequest>> GetMessageLogsAsync(CancellationToken cancellationToken)
+    {
+        var messageLogs = await _messageLogRepository.GetMessageLogsAsync(cancellationToken);
+        return messageLogs.Select(x => new MessageLogRequest()
+        {
+            MessageId = x.MessageId,
+            MessageType = x.MessageType,
+            MessageLogs = x.MessageLogs,
+        }).ToList();
+    }
+
+    public async Task<IEnumerable<MessageLogRequest>> GetMessageLogsByMessageTypeAsync(string messageType, CancellationToken cancellationToken)
+    {
+        var messageLogs = await _messageLogRepository.GetMessageLogsByMessageTypeAsync(messageType, cancellationToken);
+        return messageLogs.Select(x => new MessageLogRequest()
+        {
+            MessageId = x.MessageId,
+            MessageType = x.MessageType,
+            MessageLogs = x.MessageLogs,
+        }).ToList();
+    }
 }

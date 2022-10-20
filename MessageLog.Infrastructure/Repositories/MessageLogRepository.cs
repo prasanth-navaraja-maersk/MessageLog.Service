@@ -35,4 +35,14 @@ public class MessageLogRepository : AsyncRepository<Entities.MessageLog, Logging
 
         return id;
     }
+
+    public async Task<IEnumerable<Entities.MessageLog>> GetMessageLogsAsync(CancellationToken cancellationToken)
+    {
+        return await _uow.DbContext.MessageLog.ToListAsync(cancellationToken);
+    }
+
+    public async Task<IEnumerable<Entities.MessageLog>> GetMessageLogsByMessageTypeAsync(string messageType, CancellationToken cancellationToken)
+    {
+        return await _uow.DbContext.MessageLog.Where(m=>m.MessageType == messageType).ToListAsync(cancellationToken);
+    }
 }
