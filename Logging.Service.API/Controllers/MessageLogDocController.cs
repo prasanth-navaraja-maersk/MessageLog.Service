@@ -1,5 +1,6 @@
 ﻿using Logging.Service.Application;
 using Logging.Service.Application.Requests;
+using MessageLog.Infrastructure.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Logging.Service.API.Controllers;
@@ -22,4 +23,13 @@ public class MessageLogDocController : ControllerBase
     {
         return await _messageLogHandler.UpsertMessageLogDoc(messageLogDocRequest, cancellationToken);
     }
+    
+    [HttpGet]
+    public async Task<IEnumerable<MessageLogDoc>> GetMessageLogDocs(CancellationToken cancellationToken)
+        => await _messageLogHandler.GetMessageLogDocAsync(cancellationToken);
+    
+    [HttpGet]
+    [Route("MessageType")]
+    public async Task<IEnumerable<MessageLogDoc>> GetMessageLogDocsByMessageType(string messageType, CancellationToken cancellationToken) 
+        => await _messageLogHandler.GetMessageLogDocsByMessageTypeAsync(messageType, cancellationToken);
 }

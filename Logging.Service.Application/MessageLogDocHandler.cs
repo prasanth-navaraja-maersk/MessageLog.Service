@@ -31,4 +31,10 @@ public class MessageLogDocHandler : IMessageLogDocHandler
         
         return await _repository.UpsertMessageLogDocsAsync(messageLog, cancellationToken);
     }
+
+    public async Task<IEnumerable<MessageLogDoc>> GetMessageLogDocAsync(CancellationToken cancellationToken) 
+        => await _repository.GetMessageLogDocsAsync(cancellationToken);
+    
+    public async Task<IEnumerable<MessageLogDoc>> GetMessageLogDocsByMessageTypeAsync(string messageType, CancellationToken cancellationToken) 
+        => await _repository.GetMessageLogDocsByMessageTypeAsync(messageType, cancellationToken);
 }
