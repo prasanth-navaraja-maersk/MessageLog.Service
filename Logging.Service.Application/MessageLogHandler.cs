@@ -45,4 +45,7 @@ public class MessageLogHandler : IMessageLogHandler
             MessageLogs = x.MessageLogs,
         }).ToList();
     }
+
+    public void ClearMessageLogs()
+        => _messageLogRepository.ClearMessageLogs();
 }

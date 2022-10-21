@@ -8,4 +8,6 @@ public interface IMessageLogRepository
 
     Task<IEnumerable<Entities.MessageLog>> GetMessageLogsByMessageTypeAsync(string messageType,
         CancellationToken cancellationToken);
+
+    void ClearMessageLogs();
 }

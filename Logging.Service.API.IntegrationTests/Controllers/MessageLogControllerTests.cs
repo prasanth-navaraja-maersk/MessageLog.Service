@@ -44,7 +44,12 @@ public class MessageLogControllerTests : IClassFixture<ApiWebApplicationFactory>
             .CreateScenario("Message_Logs", step)
             .WithoutWarmUp()
             .WithLoadSimulations(
-                Simulation.KeepConstant(copies: 10, during: TimeSpan.FromSeconds(10)));
+                Simulation.KeepConstant(copies: 10, during: TimeSpan.FromSeconds(10)))
+            .WithClean(async _ =>
+            {
+                await _fixture.CreateClient()
+                    .DeleteAsync("/MessageLogs");
+            });
 
         // Act
         var stats = NBomberRunner
@@ -90,7 +95,12 @@ public class MessageLogControllerTests : IClassFixture<ApiWebApplicationFactory>
             .CreateScenario("Message_Logs", stepInsert, stepGet)
             .WithoutWarmUp()
             .WithLoadSimulations(
-                Simulation.KeepConstant(copies: 10, during: TimeSpan.FromSeconds(10)));
+                Simulation.KeepConstant(copies: 10, during: TimeSpan.FromSeconds(10)))
+            .WithClean(async _ =>
+            {
+                await _fixture.CreateClient()
+                    .DeleteAsync("/MessageLogs");
+            });
 
         // Act
         var stats = NBomberRunner
@@ -145,7 +155,12 @@ public class MessageLogControllerTests : IClassFixture<ApiWebApplicationFactory>
             .CreateScenario("Message_Logs", stepInsert, stepGet)
             .WithoutWarmUp()
             .WithLoadSimulations(
-                Simulation.KeepConstant(copies: 10, during: TimeSpan.FromSeconds(10)));
+                Simulation.KeepConstant(copies: 10, during: TimeSpan.FromSeconds(10)))
+            .WithClean(async _ =>
+            {
+                await _fixture.CreateClient()
+                    .DeleteAsync("/MessageLogs");
+            });
 
         // Act
         var stats = NBomberRunner

@@ -35,5 +35,9 @@ namespace Logging.Service.API.Controllers
         {
             return await _messageLogHandler.GetMessageLogsAsync(cancellationToken);
         }
+
+        [HttpDelete]
+        public void DeleteMessageLogsAsync()
+            => _messageLogHandler.ClearMessageLogs();
     }
 }
