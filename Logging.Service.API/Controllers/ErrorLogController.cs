@@ -22,5 +22,15 @@ namespace Logging.Service.API.Controllers
         {
             return await _errorLogHandler.UpsertErrorLog(errorLogRequest, cancellationToken);
         }
+
+        [HttpGet]
+        public async Task<IEnumerable<ErrorLogRequest>> GetErrorLogsAsync(CancellationToken cancellationToken)
+        {
+            return await _errorLogHandler.GetErrorLogsAsync(cancellationToken);
+        }
+
+        [HttpDelete]
+        public void DeleteErrorLogsAsync()
+            => _errorLogHandler.ClearErrorLogs();
     }
 }

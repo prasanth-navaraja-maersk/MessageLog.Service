@@ -35,4 +35,21 @@ public class ErrorLogRepository : AsyncRepository<ErrorLog, LoggingContext, long
 
         return id;
     }
+
+    public async Task<IEnumerable<Entities.ErrorLog>> GetErrorLogsAsync(CancellationToken cancellationToken)
+    {
+        return await _uow.DbContext.ErrorLog.ToListAsync(cancellationToken);
+    }
+
+    public async Task<IEnumerable<Entities.ErrorLog>> GetErrorLogsByErrorCategoryAsync(string messageType, CancellationToken cancellationToken)
+    {
+        return await _uow.DbContext.ErrorLog.ToListAsync(cancellationToken);
+        //return await _uow.DbContext.ErrorLog.Where(m => m.MessageType == messageType).ToListAsync(cancellationToken);
+    }
+
+    public void ClearErrorLogs()
+    {
+        _uow.DbContext.ErrorLog.RemoveRange(_uow.DbContext.ErrorLog);
+        _uow.DbContext.SaveChanges();
+    }
 }

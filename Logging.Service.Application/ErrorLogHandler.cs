@@ -23,4 +23,18 @@ public class ErrorLogHandler : IErrorLogHandler
 
         return await _errorLogRepository.UpsertErrorLogs(messageLog, cancellationToken);
     }
+
+    public async Task<IEnumerable<ErrorLogRequest>> GetErrorLogsAsync(CancellationToken cancellationToken)
+    {
+        var messageLogs = await _errorLogRepository.GetErrorLogsAsync(cancellationToken);
+        return messageLogs.Select(x => new ErrorLogRequest()
+        {
+            LogMessageId = x.LogMessageId,
+            LogMessageType = x.LogMessageType,
+            ErrorLogs = x.ErrorLogs,
+        }).ToList();
+    }
+
+    public void ClearErrorLogs()
+        => _errorLogRepository.ClearErrorLogs();
 }

@@ -5,4 +5,6 @@ namespace Logging.Service.Application;
 public interface IErrorLogHandler
 {
     Task<long> UpsertErrorLog(ErrorLogRequest errorLogRequest, CancellationToken cancellationToken);
+    Task<IEnumerable<ErrorLogRequest>> GetErrorLogsAsync(CancellationToken cancellationToken);
+    void ClearErrorLogs();
 }
