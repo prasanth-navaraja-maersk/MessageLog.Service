@@ -7,6 +7,7 @@ using Logging.Service.Application.Requests;
 using Bogus;
 using FizzWare.NBuilder;
 using Logging.Service.API.IntegrationTests.TestFramework;
+using NBomber.Contracts;
 using NBomber.Contracts.Stats;
 using NBomber.CSharp;
 using NBomber.Plugins.Http.CSharp;
@@ -24,6 +25,8 @@ public class MessageLogControllerTests : IClassFixture<ApiWebApplicationFactory>
         _fixture = fixture;
         _faker = new Faker();
         _builder = new Builder();
+        //_messageLogDocsData = builder.CreateListOfSize<MessageLogDoc>(100).Build();
+        //_messageLogDocsFeed = Feed.CreateRandom("messageLogDocs", _messageLogDocsData);
     }
 
     [Fact]
@@ -72,7 +75,7 @@ public class MessageLogControllerTests : IClassFixture<ApiWebApplicationFactory>
     public void Get_MessageLogs_LoadTest()
     {
         // Arrange
-        var requests = GetMessageLogRequest(1000);
+        var requests = GetMessageLogRequest();
         var dataFeed = Feed.CreateRandom("requests", requests);
 
         var stepInsert = Step.Create("Upsert_Message_Logs", feed: dataFeed, async context =>
@@ -113,32 +116,33 @@ public class MessageLogControllerTests : IClassFixture<ApiWebApplicationFactory>
         var stepStats = stats.ScenarioStats[0].StepStats[0];
 
         stepStats.Fail.Request.Count.Should().Be(0);
-        //stepStats.Ok.Request.Count.Should().BeGreaterThan(1000);
-        //stepStats.Ok.Request.RPS.Should().BeGreaterThan(100);
+        stepStats.Ok.Request.Count.Should().BeGreaterThan(1000);
+        stepStats.Ok.Request.RPS.Should().BeGreaterThan(100);
         stepStats.Ok.Latency.Percent75.Should().BeLessOrEqualTo(100);
         stepStats.Ok.DataTransfer.MinBytes.Should().Be(4);
-        //stepStats.Ok.DataTransfer.AllBytes.Should().BeGreaterOrEqualTo(1000L);
+        stepStats.Ok.DataTransfer.AllBytes.Should().BeGreaterOrEqualTo(1000L);
     }
 
     [Fact]
     public void Get_MessageLogsByMessageType_LoadTest()
     {
         // Arrange
-        var requests = GetMessageLogRequest(1000);
+        var requests = GetMessageLogRequest();
         var dataFeed = Feed.CreateRandom("requests", requests);
 
         var stepInsert = Step.Create("Upsert_Message_Logs", feed: dataFeed, async context =>
         {
             var resp = await _fixture.CreateClient()
                 .PostAsJsonAsync("/MessageLogs", context.FeedItem, CancellationToken.None);
+            var nbomberResponse = resp.ToNBomberResponse();
 
-            return resp.ToNBomberResponse();
+            return Response.Ok(context.FeedItem.MessageType, statusCode: nbomberResponse.StatusCode, sizeBytes: nbomberResponse.SizeBytes);
         });
 
-        var stepGet = Step.Create("Get_Message_Logs", feed: dataFeed, async context =>
+        var stepGet = Step.Create("Get_Message_Logs_By_Type", async context =>
         {
             var query = HttpUtility.ParseQueryString(string.Empty);
-            query["messageType"] = context.FeedItem.MessageType;
+            query["messageType"] = context.GetPreviousStepResponse<string>();
 
             var builder = new UriBuilder("http://localhost.com/MessageLogs/MessageType");
             builder.Port = -1;
@@ -173,11 +177,11 @@ public class MessageLogControllerTests : IClassFixture<ApiWebApplicationFactory>
         var stepStats = stats.ScenarioStats[0].StepStats[0];
 
         stepStats.Fail.Request.Count.Should().Be(0);
-        //stepStats.Ok.Request.Count.Should().BeGreaterThan(1000);
-        //stepStats.Ok.Request.RPS.Should().BeGreaterThan(100);
+        stepStats.Ok.Request.Count.Should().BeGreaterThan(1000);
+        stepStats.Ok.Request.RPS.Should().BeGreaterThan(100);
         stepStats.Ok.Latency.Percent75.Should().BeLessOrEqualTo(100);
         stepStats.Ok.DataTransfer.MinBytes.Should().Be(4);
-        //stepStats.Ok.DataTransfer.AllBytes.Should().BeGreaterOrEqualTo(1000L);
+        stepStats.Ok.DataTransfer.AllBytes.Should().BeGreaterOrEqualTo(1000L);
     }
 
 
@@ -221,7 +225,7 @@ public class MessageLogControllerTests : IClassFixture<ApiWebApplicationFactory>
         result.Should().BeSuccessful();
     }
 
-    private IEnumerable<MessageLogRequest> GetMessageLogRequest(int requestCount = 500)
+    private IEnumerable<MessageLogRequest> GetMessageLogRequest(int requestCount = 100)
     {
         var requests = _builder.CreateListOfSize<MessageLogRequest>(requestCount).All()
             .With(x => x.MessageId = _faker.Random.AlphaNumeric(10))

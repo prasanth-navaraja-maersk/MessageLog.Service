@@ -148,7 +148,7 @@ public class MessageLogDocControllerTests : IClassFixture<ApiWebApplicationFacto
             return Response.Ok(context.FeedItem.MessageType, statusCode: nbomberResponse.StatusCode, sizeBytes: nbomberResponse.SizeBytes);
         });
         
-        var getStep = Step.Create("Get_Message_Logs_Doc", async context =>
+        var getStep = Step.Create("Get_Message_Logs_Doc_By_Type", async context =>
         {
             var query = HttpUtility.ParseQueryString(string.Empty);
             query["messageType"] = context.GetPreviousStepResponse<string>();
@@ -166,7 +166,7 @@ public class MessageLogDocControllerTests : IClassFixture<ApiWebApplicationFacto
         });
 
         var scenario = ScenarioBuilder
-            .CreateScenario("GetByType_Message_Logs_Doc", upsertStep, getStep)
+            .CreateScenario("GetByType_Message_Logs_Doc_", upsertStep, getStep)
             .WithoutWarmUp()
             .WithLoadSimulations(
                 Simulation.KeepConstant(copies: 10, during: TimeSpan.FromSeconds(10)))
