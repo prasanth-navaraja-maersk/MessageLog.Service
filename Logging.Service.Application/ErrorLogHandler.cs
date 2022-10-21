@@ -26,8 +26,19 @@ public class ErrorLogHandler : IErrorLogHandler
 
     public async Task<IEnumerable<ErrorLogRequest>> GetErrorLogsAsync(CancellationToken cancellationToken)
     {
-        var messageLogs = await _errorLogRepository.GetErrorLogsAsync(cancellationToken);
-        return messageLogs.Select(x => new ErrorLogRequest()
+        var errorLogs = await _errorLogRepository.GetErrorLogsAsync(cancellationToken);
+        return errorLogs.Select(x => new ErrorLogRequest()
+        {
+            LogMessageId = x.LogMessageId,
+            LogMessageType = x.LogMessageType,
+            ErrorLogs = x.ErrorLogs,
+        }).ToList();
+    }
+
+    public async Task<IEnumerable<ErrorLogRequest>> GetErrorLogsByErrorCategoryAsync(string errorCategory, CancellationToken cancellationToken)
+    {
+        var errorLogs = await _errorLogRepository.GetErrorLogsByErrorCategoryAsync(errorCategory, cancellationToken);
+        return errorLogs.Select(x => new ErrorLogRequest()
         {
             LogMessageId = x.LogMessageId,
             LogMessageType = x.LogMessageType,

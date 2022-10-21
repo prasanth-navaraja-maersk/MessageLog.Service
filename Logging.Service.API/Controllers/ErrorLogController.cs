@@ -29,6 +29,13 @@ namespace Logging.Service.API.Controllers
             return await _errorLogHandler.GetErrorLogsAsync(cancellationToken);
         }
 
+        [HttpGet]
+        [Route("ErrorCategory")]
+        public async Task<IEnumerable<ErrorLogRequest>> GetErrorLogsByErrorCategoryAsync(string errorCategory, CancellationToken cancellationToken)
+        {
+            return await _errorLogHandler.GetErrorLogsByErrorCategoryAsync(errorCategory, cancellationToken);
+        }
+
         [HttpDelete]
         public void DeleteErrorLogsAsync()
             => _errorLogHandler.ClearErrorLogs();

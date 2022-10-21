@@ -41,9 +41,12 @@ public class ErrorLogRepository : AsyncRepository<ErrorLog, LoggingContext, long
         return await _uow.DbContext.ErrorLog.ToListAsync(cancellationToken);
     }
 
-    public async Task<IEnumerable<Entities.ErrorLog>> GetErrorLogsByErrorCategoryAsync(string messageType, CancellationToken cancellationToken)
+    public async Task<IEnumerable<ErrorLog>> GetErrorLogsByErrorCategoryAsync(string errorCategory, CancellationToken cancellationToken)
     {
-        return await _uow.DbContext.ErrorLog.ToListAsync(cancellationToken);
+        return _uow.DbContext.ErrorLog
+            .Where(e => e.ErrorLogs.RootElement.GetProperty("ErrorCategory").GetString() == errorCategory)
+            .ToList();
+        //return await _uow.DbContext.ErrorLog.ToListAsync(cancellationToken);
         //return await _uow.DbContext.ErrorLog.Where(m => m.MessageType == messageType).ToListAsync(cancellationToken);
     }
 
