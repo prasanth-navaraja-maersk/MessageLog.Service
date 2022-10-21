@@ -12,18 +12,20 @@ using MessageLog.Infrastructure.Entities;
 using NBomber.Contracts;
 using System.Net.Http.Json;
 using System.Web;
+using MessageLog.Infrastructure;
+using System;
 
 namespace Logging.Service.API.IntegrationTests.Controllers;
 
-public class MessageLogDocControllerTests : IClassFixture<ApiWebApplicationFactory>
+public class MessageLogDocControllerTests : IClassFixture<IntegrationTestFactory<Program, LoggingContext>>
 {
-    private readonly ApiWebApplicationFactory _fixture;
+    private readonly IntegrationTestFactory<Program, LoggingContext> _fixture;
     private readonly Faker _faker;
     private readonly CancellationToken _cancellationToken;
     private readonly IFeed<MessageLogDoc> _messageLogDocsFeed;
     private readonly IList<MessageLogDoc> _messageLogDocsData;
 
-    public MessageLogDocControllerTests(ApiWebApplicationFactory fixture)
+    public MessageLogDocControllerTests(IntegrationTestFactory<Program, LoggingContext> fixture)
     {
         _fixture = fixture;
         _faker = new Faker();
@@ -54,11 +56,12 @@ public class MessageLogDocControllerTests : IClassFixture<ApiWebApplicationFacto
             .WithoutWarmUp()
             .WithLoadSimulations(
                 Simulation.KeepConstant(copies: 10, during: TimeSpan.FromSeconds(10)))
-            .WithClean(async _ =>
-            {
-                await _fixture.CreateClient()
-                    .DeleteAsync("/MessageLogDocs");
-            }); ;
+            //.WithClean(async _ =>
+            //{
+            //    await _fixture.CreateClient()
+            //        .DeleteAsync("/MessageLogDocs");
+            //})
+            ;
 
         // Act
         var stats = NBomberRunner
@@ -107,11 +110,12 @@ public class MessageLogDocControllerTests : IClassFixture<ApiWebApplicationFacto
             .WithoutWarmUp()
             .WithLoadSimulations(
                 Simulation.KeepConstant(copies: 10, during: TimeSpan.FromSeconds(10)))
-            .WithClean(async _ =>
-            {
-                await _fixture.CreateClient()
-                    .DeleteAsync("/MessageLogDocs");
-            }); ;
+            //.WithClean(async _ =>
+            //{
+            //    await _fixture.CreateClient()
+            //        .DeleteAsync("/MessageLogDocs");
+            //})
+            ;
 
         // Act
         var stats = NBomberRunner
