@@ -18,6 +18,7 @@ public class MessageLogDocHandler : IMessageLogDocHandler
         var messageLog = new MessageLogDoc
         {
             MessageId = messageLogRequest.MessageLogDoc.MessageId,
+            ExternalIdentifier = messageLogRequest.MessageLogDoc.ExternalIdentifier,
             MessageType = messageLogRequest.MessageLogDoc.MessageType,
             Status = messageLogRequest.MessageLogDoc.Status,
             Stage = messageLogRequest.MessageLogDoc.Stage,

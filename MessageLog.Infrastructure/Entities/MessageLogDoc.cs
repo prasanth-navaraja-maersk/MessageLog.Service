@@ -6,6 +6,7 @@ public class MessageLogDoc : IEntity<long>, ISystemCreateDate, ISystemModifiedDa
 {
     public long Id { get; set; }
     public string MessageId { get; set; }
+    public string ExternalIdentifier { get; set; }
     public string MessageType { get; set; }
     public string Source { get; set; }
     public string Destination { get; set; }

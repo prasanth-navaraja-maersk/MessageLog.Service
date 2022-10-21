@@ -17,21 +17,29 @@ public class MessageLogDocRepository : AsyncRepository<Entities.MessageLog, Logg
     public async Task<long> UpsertMessageLogDocsAsync(MessageLogDoc messageLog, CancellationToken cancellationToken)
     {
         long id;
-        var log = await _uow.DbContext.MessageLogDoc
-            .FirstOrDefaultAsync(x => x.MessageId == messageLog.MessageId
-                                      && x.MessageType == messageLog.MessageType,
-                cancellationToken);
-        if (log == null)
+        try
         {
-            var entity = await _uow.DbContext.MessageLogDoc.AddAsync(messageLog, cancellationToken);
-            await _uow.DbContext.SaveChangesAsync(cancellationToken);
-            id = entity.Entity.Id;
+            var log = await _uow.DbContext.MessageLogDoc
+                .FirstOrDefaultAsync(x => x.MessageId == messageLog.MessageId
+                                          && x.MessageType == messageLog.MessageType,
+                    cancellationToken);
+            if (log == null)
+            {
+                var entity = await _uow.DbContext.MessageLogDoc.AddAsync(messageLog, cancellationToken);
+                await _uow.DbContext.SaveChangesAsync(cancellationToken);
+                id = entity.Entity.Id;
+            }
+            else
+            {
+                _uow.DbContext.MessageLogDoc.Update(log);
+                await _uow.DbContext.SaveChangesAsync(cancellationToken);
+                id = log!.Id;
+            }
         }
-        else
+        catch (Exception ex)
         {
-            _uow.DbContext.MessageLogDoc.Update(log);
-            await _uow.DbContext.SaveChangesAsync(cancellationToken);
-            id = log!.Id;
+
+            throw;
         }
 
         return id;
