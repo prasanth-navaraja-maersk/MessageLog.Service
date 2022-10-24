@@ -28,10 +28,10 @@ public class MessageLogDocumentControllerTests : IClassFixture<ApiWebApplication
     }
 
     [Fact]
-    public void Upsert_StateUnderTest_ExpectedBehavior()
+    public void Upsert_MessageLogDocuments_LoadTest()
     {
         // Arrange
-        var messageLogRequests = GetMessageLogRequest();
+        var messageLogRequests = GetMessageLogDocumentRequest();
         var dataFeed = Feed.CreateCircular("requests", messageLogRequests);
         var step = Step.Create("Upsert", feed: dataFeed, async context =>
         {
@@ -70,10 +70,10 @@ public class MessageLogDocumentControllerTests : IClassFixture<ApiWebApplication
     }
 
     [Fact]
-    public void Get_MessageLogs_LoadTest()
+    public void Get_MessageLogDocuments_LoadTest()
     {
         // Arrange
-        var requests = GetMessageLogRequest();
+        var requests = GetMessageLogDocumentRequest();
         var dataFeed = Feed.CreateRandom("requests", requests);
 
         var stepInsert = Step.Create("Upsert", feed: dataFeed, async context =>
@@ -122,10 +122,10 @@ public class MessageLogDocumentControllerTests : IClassFixture<ApiWebApplication
     }
 
     [Fact]
-    public void Get_MessageLogsByMessageType_LoadTest()
+    public void Get_MessageLogDocumentsByMessageType_LoadTest()
     {
         // Arrange
-        var requests = GetMessageLogRequest();
+        var requests = GetMessageLogDocumentRequest();
         var dataFeed = Feed.CreateRandom("requests", requests);
 
         var stepInsert = Step.Create("Upsert", feed: dataFeed, async context =>
@@ -184,10 +184,10 @@ public class MessageLogDocumentControllerTests : IClassFixture<ApiWebApplication
 
 
     [Fact]
-    public async Task Get_MessageLogs_IntegrationTest()
+    public async Task Get_MessageLogDocuments_IntegrationTest()
     {
         // Arrange
-        var messageLogRequest = GetMessageLogRequest();
+        var messageLogRequest = GetMessageLogDocumentRequest();
 
         // Act
         _ = await _fixture.CreateClient()
@@ -200,10 +200,10 @@ public class MessageLogDocumentControllerTests : IClassFixture<ApiWebApplication
     }
 
     [Fact]
-    public async Task Get_MessageLogs_ByMessageType_IntegrationTest()
+    public async Task Get_MessageLogDocuments_ByMessageType_IntegrationTest()
     {
         // Arrange
-        var messageLogRequest = GetMessageLogRequest();
+        var messageLogRequest = GetMessageLogDocumentRequest();
 
         var query = HttpUtility.ParseQueryString(string.Empty);
         query["messageType"] = messageLogRequest.First().MessageType;
@@ -223,22 +223,22 @@ public class MessageLogDocumentControllerTests : IClassFixture<ApiWebApplication
         result.Should().BeSuccessful();
     }
 
-    private IEnumerable<MessageLogDocumentRequest> GetMessageLogRequest(int requestCount = 100)
+    private IEnumerable<MessageLogDocumentRequest> GetMessageLogDocumentRequest(int requestCount = 100)
     {
         var requests = _builder.CreateListOfSize<MessageLogDocumentRequest>(requestCount).All()
             .With(x => x.MessageId = _faker.Random.AlphaNumeric(10))
             .With(x => x.MessageType = _faker.Random.AlphaNumeric(10))
-            .With(x => x.MessageLogs = CreateMessageLogJson())
+            .With(x => x.MessageLogs = CreateMessageLogDocumentJson())
             .Build();
 
         return requests;
     }
 
-    private JsonDocument CreateMessageLogJson()
+    private JsonDocument CreateMessageLogDocumentJson()
     {
         var messageLog = (new JsonObject
         {
-            ["CorrelationId"] = _faker.Random.AlphaNumeric(10),
+            ["CorrelationId"] = _faker.Random.Long(10),
             ["StandardAlphaCarrierCode"] = _faker.Random.AlphaNumeric(5),
             ["CustomerCode"] = _faker.Random.AlphaNumeric(4),
             ["VendorName"] = _faker.Random.AlphaNumeric(10),

@@ -49,7 +49,7 @@ public class MessageLogControllerTests : IClassFixture<ApiWebApplicationFactory>
         });
 
         var scenario = ScenarioBuilder
-            .CreateScenario("Message_Logs_Doc", step)
+            .CreateScenario("Message_Logs", step)
             .WithoutWarmUp()
             .WithLoadSimulations(
                 Simulation.KeepConstant(copies: 10, during: TimeSpan.FromSeconds(10)))
@@ -57,7 +57,7 @@ public class MessageLogControllerTests : IClassFixture<ApiWebApplicationFactory>
             {
                 await _fixture.CreateClient()
                     .DeleteAsync("/MessageLogs");
-            }); ;
+            });
 
         // Act
         var stats = NBomberRunner
@@ -102,7 +102,7 @@ public class MessageLogControllerTests : IClassFixture<ApiWebApplicationFactory>
         });
 
         var scenario = ScenarioBuilder
-            .CreateScenario("Message_Logs_Doc", upsertStep, getStep)
+            .CreateScenario("Message_Logs", upsertStep, getStep)
             .WithoutWarmUp()
             .WithLoadSimulations(
                 Simulation.KeepConstant(copies: 10, during: TimeSpan.FromSeconds(10)))
@@ -110,7 +110,7 @@ public class MessageLogControllerTests : IClassFixture<ApiWebApplicationFactory>
             {
                 await _fixture.CreateClient()
                     .DeleteAsync("/MessageLogs");
-            }); ;
+            });
 
         // Act
         var stats = NBomberRunner
@@ -165,7 +165,7 @@ public class MessageLogControllerTests : IClassFixture<ApiWebApplicationFactory>
         });
 
         var scenario = ScenarioBuilder
-            .CreateScenario("GetByType_", upsertStep, getStep)
+            .CreateScenario("GetByType_MessageLogs", upsertStep, getStep)
             .WithoutWarmUp()
             .WithLoadSimulations(
                 Simulation.KeepConstant(copies: 10, during: TimeSpan.FromSeconds(10)))
