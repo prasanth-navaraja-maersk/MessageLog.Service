@@ -1,5 +1,5 @@
 ﻿using Finance.Common.Database.Relational.Extensions;
-using MessageLog.Service.Entities;
+using MessageLog.Infrastructure;
 using MessageLog.Service.Repositories;
 using Microsoft.Extensions.DependencyInjection;
 using SqlKata.Compilers;

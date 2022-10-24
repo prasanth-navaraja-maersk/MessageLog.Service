@@ -102,7 +102,7 @@ public class MessageLogControllerTests : IClassFixture<ApiWebApplicationFactory>
         });
 
         var scenario = ScenarioBuilder
-            .CreateScenario("Message_Logs", upsertStep, getStep)
+            .CreateScenario("Get_Message_Logs", upsertStep, getStep)
             .WithoutWarmUp()
             .WithLoadSimulations(
                 Simulation.KeepConstant(copies: 10, during: TimeSpan.FromSeconds(10)))

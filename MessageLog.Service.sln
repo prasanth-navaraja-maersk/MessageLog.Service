@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.32014.148
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MessageLog.Service", "MessageLog.Service\MessageLog.Service.csproj", "{47AE1D53-11BA-4E89-BC90-85748AE28BEB}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MessageLog.Infrastructure", "MessageLog.Infrastructure\MessageLog.Infrastructure.csproj", "{CA186A8A-73B5-4F6A-A8AA-2B9F74FCA993}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Logging.Service.API", "Logging.Service.API\Logging.Service.API.csproj", "{3CA12E14-185A-4908-8C67-0C79F1C0525D}"
@@ -19,10 +17,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{47AE1D53-11BA-4E89-BC90-85748AE28BEB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{47AE1D53-11BA-4E89-BC90-85748AE28BEB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{47AE1D53-11BA-4E89-BC90-85748AE28BEB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{47AE1D53-11BA-4E89-BC90-85748AE28BEB}.Release|Any CPU.Build.0 = Release|Any CPU
 		{CA186A8A-73B5-4F6A-A8AA-2B9F74FCA993}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{CA186A8A-73B5-4F6A-A8AA-2B9F74FCA993}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CA186A8A-73B5-4F6A-A8AA-2B9F74FCA993}.Release|Any CPU.ActiveCfg = Release|Any CPU

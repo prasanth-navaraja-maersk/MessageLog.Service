@@ -22,7 +22,10 @@
 
   <ItemGroup>
     <Folder Include="Extensions\" />
-    <Folder Include="Repositories\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MessageLog.Infrastructure\MessageLog.Infrastructure.csproj" />
   </ItemGroup>
 
   <!--<ItemGroup>
