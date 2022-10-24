@@ -3,7 +3,7 @@ using MessageLog.Infrastructure.Repositories;
 
 namespace Logging.Service.Application;
 
-public class MessageLogDocumentHandler : IMessageLogHandler
+public class MessageLogDocumentHandler : IMessageLogDocumentHandler
 {
     private readonly IMessageLogDocumentRepository _messageLogRepository;
 
@@ -12,11 +12,11 @@ public class MessageLogDocumentHandler : IMessageLogHandler
         _messageLogRepository = messageLogRepository;
     }
 
-    public async Task<long> UpsertMessageLog(MessageLogRequest messageLogRequest, CancellationToken cancellationToken)
+    public async Task<long> UpsertMessageLogDocuments(MessageLogDocumentRequest messageLogRequest, CancellationToken cancellationToken)
     {
         var messageLog = new MessageLog.Infrastructure.Entities.MessageLogDocument
         {
-            MessageId = messageLogRequest.MessageId,
+            CorrelationId = messageLogRequest.MessageId,
             MessageType = messageLogRequest.MessageType,
             MessageLogDocuments = messageLogRequest.MessageLogs
         };
@@ -24,28 +24,28 @@ public class MessageLogDocumentHandler : IMessageLogHandler
         return await _messageLogRepository.UpsertMessageLogs(messageLog, cancellationToken);
     }
 
-    public async Task<IEnumerable<MessageLogRequest>> GetMessageLogsAsync(CancellationToken cancellationToken)
+    public async Task<IEnumerable<MessageLogDocumentRequest>> GetMessageLogDocumentsAsync(CancellationToken cancellationToken)
     {
         var messageLogs = await _messageLogRepository.GetMessageLogsAsync(cancellationToken);
-        return messageLogs.Select(x => new MessageLogRequest()
+        return messageLogs.Select(x => new MessageLogDocumentRequest()
         {
-            MessageId = x.MessageId,
+            MessageId = x.CorrelationId,
             MessageType = x.MessageType,
             MessageLogs = x.MessageLogDocuments,
         }).ToList();
     }
 
-    public async Task<IEnumerable<MessageLogRequest>> GetMessageLogsByMessageTypeAsync(string messageType, CancellationToken cancellationToken)
+    public async Task<IEnumerable<MessageLogDocumentRequest>> GetMessageLogDocumentsByMessageTypeAsync(string messageType, CancellationToken cancellationToken)
     {
         var messageLogs = await _messageLogRepository.GetMessageLogsByMessageTypeAsync(messageType, cancellationToken);
-        return messageLogs.Select(x => new MessageLogRequest()
+        return messageLogs.Select(x => new MessageLogDocumentRequest()
         {
-            MessageId = x.MessageId,
+            MessageId = x.CorrelationId,
             MessageType = x.MessageType,
             MessageLogs = x.MessageLogDocuments,
         }).ToList();
     }
 
-    public void ClearMessageLogs()
+    public void ClearMessageLogDocuments()
         => _messageLogRepository.ClearMessageLogDocuments();
 }

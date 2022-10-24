@@ -13,7 +13,7 @@ public static class ServiceCollectionExtension
         serviceCollection.AddQueryExecution<LoggingContext, PostgresCompiler>();
         serviceCollection.AddScoped<IMessageLogDocumentRepository, MessageLogDocumentRepository>();
         serviceCollection.AddScoped<IErrorLogRepository, ErrorLogRepository>();
-        serviceCollection.AddScoped<IMessageLogDocRepository, MessageLogDocRepository>();
+        serviceCollection.AddScoped<IMessageLogRepository, MessageLogRepository>();
         //serviceCollection.AddScoped<IErrorLogDocRepository, ErrorLogDocRepository>();
     }
 }

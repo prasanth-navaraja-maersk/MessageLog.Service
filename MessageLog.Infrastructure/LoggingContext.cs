@@ -17,7 +17,7 @@ namespace MessageLog.Infrastructure
         }
 
         public DbSet<MessageLogDocument> MessageLogDocuments { get; set; }
-        public DbSet<MessageLogDoc> MessageLogDoc { get; set; }
+        public DbSet<Entities.MessageLog> MessageLogs { get; set; }
         public DbSet<ErrorLog> ErrorLog { get; set; }
         public DbSet<ErrorLogDoc> ErrorLogDoc { get; set; }
 
@@ -35,8 +35,8 @@ namespace MessageLog.Infrastructure
                 .Property(b => b.ErrorLogs)
                 .HasColumnType("jsonb");
 
-            modelBuilder.Entity<MessageLogDoc>()
-                .ToTable(nameof(MessageLogDoc));
+            modelBuilder.Entity<Entities.MessageLog>()
+                .ToTable(nameof(MessageLogs));
             modelBuilder.Entity<ErrorLogDoc>()
                 .ToTable(nameof(ErrorLogDoc));
         }

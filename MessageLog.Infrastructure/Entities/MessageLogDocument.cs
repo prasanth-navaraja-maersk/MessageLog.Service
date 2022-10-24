@@ -6,7 +6,7 @@ namespace MessageLog.Infrastructure.Entities;
 public class MessageLogDocument : IEntity<long>, ISystemCreateDate, ISystemModifiedDate
 {
     public long Id { get; set; }
-    public string MessageId { get; set; }
+    public string CorrelationId { get; set; }
     public string MessageType { get; set; }
 
     public JsonDocument MessageLogDocuments { get; set; }

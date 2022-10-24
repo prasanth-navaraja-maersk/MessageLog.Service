@@ -2,12 +2,13 @@
 
 namespace MessageLog.Infrastructure.Entities;
 
-public class MessageLogDoc : IEntity<long>, ISystemCreateDate, ISystemModifiedDate
+public class MessageLog : IEntity<long>, ISystemCreateDate, ISystemModifiedDate
 {
     public long Id { get; set; }
-    public string MessageId { get; set; } //CorelationId
-    public string ExternalIdentifier { get; set; }
+    public long? CorrelationId { get; set; }
+    public string? ExternalIdentifier { get; set; }
     public string MessageType { get; set; }
+    public string? Metadata { get; set; }
     public string Source { get; set; }
     public string Destination { get; set; }
     public string Status { get; set; }
@@ -17,6 +18,4 @@ public class MessageLogDoc : IEntity<long>, ISystemCreateDate, ISystemModifiedDa
     public string? BlobUrl { get; set; }
     public DateTime? SystemCreateDate { get; set; }
     public DateTime? SystemModifiedDate { get; set; }
-
-    //Metadata => store composite key value
 }

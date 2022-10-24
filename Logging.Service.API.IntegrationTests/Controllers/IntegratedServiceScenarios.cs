@@ -1,16 +1,9 @@
-﻿using System.Net.Http.Json;
-using System.Text;
-using System.Text.Json;
-using System.Text.Json.Nodes;
+﻿using System.Text;
 using FluentAssertions;
 using Logging.Service.Application.Requests;
 using Bogus;
 using FizzWare.NBuilder;
 using Logging.Service.API.IntegrationTests.TestFramework;
-using MessageLog.Infrastructure.Entities;
-using NBomber.Contracts.Stats;
-using NBomber.CSharp;
-using NBomber.Plugins.Http.CSharp;
 using Newtonsoft.Json;
 
 namespace Logging.Service.API.IntegrationTests.Controllers;
@@ -32,14 +25,14 @@ public class IntegratedServiceScenarios : IClassFixture<ApiWebApplicationFactory
     public async Task TO_MessageLogs()
     {
         // Arrange
-        var messageId = _faker.Random.AlphaNumeric(16);
+        var correlationId = _faker.Random.Long(16);
         var transportOrderNumber = _faker.Random.AlphaNumeric(10);
 
         //TO Inbound
-        var messageLogRequest = _builder.CreateNew<MessageLogDocRequest>()
-            .With(m => m.MessageLogDoc = _builder.CreateNew<MessageLogDoc>()
+        var messageLogRequest = _builder.CreateNew<MessageLogRequest>()
+            .With(m => m.MessageLog = _builder.CreateNew<MessageLog.Infrastructure.Entities.MessageLog>()
                 .With(x => x.ExternalIdentifier = transportOrderNumber)
-                .With(x => x.MessageId = messageId)
+                .With(x => x.CorrelationId = correlationId)
                 .With(x => x.Source = "NeoNav")
                 .With(x => x.Destination = "FA&P")
                 .With(x => x.MessageType = "TransportOrderInbound")
@@ -49,13 +42,13 @@ public class IntegratedServiceScenarios : IClassFixture<ApiWebApplicationFactory
 
         // Act
         var result = await _fixture.CreateClient()
-            .PostAsync("/MessageLogDocs", httpContent, CancellationToken.None);
+            .PostAsync("/MessageLogs", httpContent, CancellationToken.None);
 
         //TO Outbound
-        var outboundMessageLogRequest = _builder.CreateNew<MessageLogDocRequest>()
-            .With(m => m.MessageLogDoc = _builder.CreateNew<MessageLogDoc>()
+        var outboundMessageLogRequest = _builder.CreateNew<MessageLogRequest>()
+            .With(m => m.MessageLog = _builder.CreateNew<MessageLog.Infrastructure.Entities.MessageLog>()
                 .With(x => x.ExternalIdentifier = transportOrderNumber)
-                .With(x => x.MessageId = messageId)
+                .With(x => x.CorrelationId = correlationId)
                 .With(x => x.Source = "FA&P")
                 .With(x => x.Destination = "Envista")
                 .With(x => x.MessageType = "TransportOrderOutbound")
@@ -65,7 +58,7 @@ public class IntegratedServiceScenarios : IClassFixture<ApiWebApplicationFactory
 
         // Act
         var outboundResult = await _fixture.CreateClient()
-            .PostAsync("/MessageLogDocs", outboundHttpContent, CancellationToken.None);
+            .PostAsync("/MessageLogs", outboundHttpContent, CancellationToken.None);
 
         // Assert
         result.Should().BeSuccessful();
@@ -76,14 +69,14 @@ public class IntegratedServiceScenarios : IClassFixture<ApiWebApplicationFactory
     public async Task SI_MessageLogs()
     {
         // Arrange
-        var messageId = _faker.Random.AlphaNumeric(16);
+        var correlationId = _faker.Random.Long(16);
         var externalInvoiceId = _faker.Random.AlphaNumeric(10);
 
         //Si Inbound
-        var messageLogRequest = _builder.CreateNew<MessageLogDocRequest>()
-            .With(m => m.MessageLogDoc = _builder.CreateNew<MessageLogDoc>()
+        var messageLogRequest = _builder.CreateNew<MessageLogRequest>()
+            .With(m => m.MessageLog = _builder.CreateNew<MessageLog.Infrastructure.Entities.MessageLog>()
                 .With(x => x.ExternalIdentifier = externalInvoiceId)
-                .With(x => x.MessageId = messageId)
+                .With(x => x.CorrelationId = correlationId)
                 .With(x => x.Source = "Envista")
                 .With(x => x.Destination = "FA&P")
                 .With(x => x.MessageType = "SupplierInvoiceInbound")
@@ -93,13 +86,13 @@ public class IntegratedServiceScenarios : IClassFixture<ApiWebApplicationFactory
 
         // Act
         var result = await _fixture.CreateClient()
-            .PostAsync("/MessageLogDocs", httpContent, CancellationToken.None);
+            .PostAsync("/MessageLogs", httpContent, CancellationToken.None);
 
         //SI Outbound
-        var outboundMessageLogRequest = _builder.CreateNew<MessageLogDocRequest>()
-            .With(m => m.MessageLogDoc = _builder.CreateNew<MessageLogDoc>()
+        var outboundMessageLogRequest = _builder.CreateNew<MessageLogRequest>()
+            .With(m => m.MessageLog = _builder.CreateNew<MessageLog.Infrastructure.Entities.MessageLog>()
                 .With(x => x.ExternalIdentifier = externalInvoiceId)
-                .With(x => x.MessageId = messageId)
+                .With(x => x.CorrelationId = correlationId)
                 .With(x => x.Source = "FA&P")
                 .With(x => x.Destination = "Seeburger")
                 .With(x => x.MessageType = "SupplierInvoiceOutbound")
@@ -109,7 +102,7 @@ public class IntegratedServiceScenarios : IClassFixture<ApiWebApplicationFactory
 
         // Act
         var outboundResult = await _fixture.CreateClient()
-            .PostAsync("/MessageLogDocs", outboundHttpContent, CancellationToken.None);
+            .PostAsync("/MessageLogs", outboundHttpContent, CancellationToken.None);
 
         // Assert
         result.Should().BeSuccessful();

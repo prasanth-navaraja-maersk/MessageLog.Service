@@ -17,7 +17,7 @@ public class MessageLogDocumentRepository : AsyncRepository<Entities.MessageLogD
     {
         long id = 0;
         var log = await _uow.DbContext.MessageLogDocuments
-            .FirstOrDefaultAsync(x => x.MessageId == messageLogDocument.MessageId 
+            .FirstOrDefaultAsync(x => x.CorrelationId == messageLogDocument.CorrelationId 
                                       && x.MessageType == messageLogDocument.MessageType, 
                 cancellationToken);
         if (log == null)

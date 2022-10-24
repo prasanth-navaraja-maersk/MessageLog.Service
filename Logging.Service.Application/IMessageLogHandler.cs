@@ -4,11 +4,10 @@ namespace Logging.Service.Application;
 
 public interface IMessageLogHandler
 {
-    Task<long> UpsertMessageLog(MessageLogRequest messageLogRequest, CancellationToken cancellationToken);
+    Task<long> UpsertMessageLogsAsync(MessageLogRequest messageLogRequest, CancellationToken cancellationToken);
+    Task<IEnumerable<MessageLog.Infrastructure.Entities.MessageLog>> GetMessageLogsAsync(CancellationToken cancellationToken);
 
-    Task<IEnumerable<MessageLogRequest>> GetMessageLogsAsync(CancellationToken cancellationToken);
-
-    Task<IEnumerable<MessageLogRequest>> GetMessageLogsByMessageTypeAsync(string messageType,
+    Task<IEnumerable<MessageLog.Infrastructure.Entities.MessageLog>> GetMessageLogsByMessageTypeAsync(string messageType,
         CancellationToken cancellationToken);
 
     void ClearMessageLogs();
