@@ -3,22 +3,22 @@ using MessageLog.Infrastructure.Repositories;
 
 namespace Logging.Service.Application;
 
-public class MessageLogHandler : IMessageLogHandler
+public class MessageLogDocumentHandler : IMessageLogHandler
 {
-    private readonly IMessageLogRepository _messageLogRepository;
+    private readonly IMessageLogDocumentRepository _messageLogRepository;
 
-    public MessageLogHandler(IMessageLogRepository messageLogRepository)
+    public MessageLogDocumentHandler(IMessageLogDocumentRepository messageLogRepository)
     {
         _messageLogRepository = messageLogRepository;
     }
 
     public async Task<long> UpsertMessageLog(MessageLogRequest messageLogRequest, CancellationToken cancellationToken)
     {
-        var messageLog = new MessageLog.Infrastructure.Entities.MessageLog
+        var messageLog = new MessageLog.Infrastructure.Entities.MessageLogDocument
         {
             MessageId = messageLogRequest.MessageId,
             MessageType = messageLogRequest.MessageType,
-            MessageLogs = messageLogRequest.MessageLogs
+            MessageLogDocuments = messageLogRequest.MessageLogs
         };
 
         return await _messageLogRepository.UpsertMessageLogs(messageLog, cancellationToken);
@@ -31,7 +31,7 @@ public class MessageLogHandler : IMessageLogHandler
         {
             MessageId = x.MessageId,
             MessageType = x.MessageType,
-            MessageLogs = x.MessageLogs,
+            MessageLogs = x.MessageLogDocuments,
         }).ToList();
     }
 
@@ -42,10 +42,10 @@ public class MessageLogHandler : IMessageLogHandler
         {
             MessageId = x.MessageId,
             MessageType = x.MessageType,
-            MessageLogs = x.MessageLogs,
+            MessageLogs = x.MessageLogDocuments,
         }).ToList();
     }
 
     public void ClearMessageLogs()
-        => _messageLogRepository.ClearMessageLogs();
+        => _messageLogRepository.ClearMessageLogDocuments();
 }

@@ -6,7 +6,7 @@ public static class ServiceCollectionExtension
 {
     public static void AddLoggingService(this IServiceCollection serviceCollection)
     {
-        serviceCollection.AddScoped<IMessageLogHandler, MessageLogHandler>();
+        serviceCollection.AddScoped<IMessageLogHandler, MessageLogDocumentHandler>();
         serviceCollection.AddScoped<IErrorLogHandler, ErrorLogHandler>();
         serviceCollection.AddScoped<IMessageLogDocHandler, MessageLogDocHandler>();
         //serviceCollection.AddScoped<IErrorLogDocHandler, ErrorLogDocHandler>();

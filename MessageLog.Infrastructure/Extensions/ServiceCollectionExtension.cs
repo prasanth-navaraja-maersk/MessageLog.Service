@@ -11,7 +11,7 @@ public static class ServiceCollectionExtension
     {
         serviceCollection.AddScopedPersistence<LoggingContext>();
         serviceCollection.AddQueryExecution<LoggingContext, PostgresCompiler>();
-        serviceCollection.AddScoped<IMessageLogRepository, MessageLogRepository>();
+        serviceCollection.AddScoped<IMessageLogDocumentRepository, MessageLogDocumentRepository>();
         serviceCollection.AddScoped<IErrorLogRepository, ErrorLogRepository>();
         serviceCollection.AddScoped<IMessageLogDocRepository, MessageLogDocRepository>();
         //serviceCollection.AddScoped<IErrorLogDocRepository, ErrorLogDocRepository>();

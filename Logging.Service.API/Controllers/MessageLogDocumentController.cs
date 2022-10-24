@@ -5,13 +5,13 @@ using Microsoft.AspNetCore.Mvc;
 namespace Logging.Service.API.Controllers
 {
     [ApiController]
-    [Route("MessageLogs")]
-    public class MessageLogController : ControllerBase
+    [Route("MessageLogDocuments")]
+    public class MessageLogDocumentController : ControllerBase
     {
-        private readonly ILogger<MessageLogController> _logger;
+        private readonly ILogger<MessageLogDocumentController> _logger;
         private readonly IMessageLogHandler _messageLogHandler;
 
-        public MessageLogController(ILogger<MessageLogController> logger, IMessageLogHandler messageLogHandler)
+        public MessageLogDocumentController(ILogger<MessageLogDocumentController> logger, IMessageLogHandler messageLogHandler)
         {
             _logger = logger;
             _messageLogHandler = messageLogHandler;
@@ -30,7 +30,7 @@ namespace Logging.Service.API.Controllers
         }
 
         [HttpGet]
-        [Route("/MessageLogs/MessageType")]
+        [Route("/MessageLogDocuments/MessageType")]
         public async Task<IEnumerable<MessageLogRequest>> GetMessageLogsByMessageTypeAsync(string messageType, CancellationToken cancellationToken)
         {
             return await _messageLogHandler.GetMessageLogsAsync(cancellationToken);

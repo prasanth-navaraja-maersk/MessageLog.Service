@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MessageLog.Infrastructure.Repositories;
 
-public class MessageLogDocRepository : AsyncRepository<Entities.MessageLog, LoggingContext, long>, IMessageLogDocRepository
+public class MessageLogDocRepository : AsyncRepository<MessageLogDoc, LoggingContext, long>, IMessageLogDocRepository
 {
     private readonly IUnitOfWork<LoggingContext> _uow;
 
@@ -17,29 +17,21 @@ public class MessageLogDocRepository : AsyncRepository<Entities.MessageLog, Logg
     public async Task<long> UpsertMessageLogDocsAsync(MessageLogDoc messageLog, CancellationToken cancellationToken)
     {
         long id;
-        try
+        var log = await _uow.DbContext.MessageLogDoc
+            .FirstOrDefaultAsync(x => x.MessageId == messageLog.MessageId
+                                      && x.MessageType == messageLog.MessageType,
+                cancellationToken);
+        if (log == null)
         {
-            var log = await _uow.DbContext.MessageLogDoc
-                .FirstOrDefaultAsync(x => x.MessageId == messageLog.MessageId
-                                          && x.MessageType == messageLog.MessageType,
-                    cancellationToken);
-            if (log == null)
-            {
-                var entity = await _uow.DbContext.MessageLogDoc.AddAsync(messageLog, cancellationToken);
-                await _uow.DbContext.SaveChangesAsync(cancellationToken);
-                id = entity.Entity.Id;
-            }
-            else
-            {
-                _uow.DbContext.MessageLogDoc.Update(log);
-                await _uow.DbContext.SaveChangesAsync(cancellationToken);
-                id = log!.Id;
-            }
+            var entity = await _uow.DbContext.MessageLogDoc.AddAsync(messageLog, cancellationToken);
+            await _uow.DbContext.SaveChangesAsync(cancellationToken);
+            id = entity.Entity.Id;
         }
-        catch (Exception ex)
+        else
         {
-
-            throw;
+            _uow.DbContext.MessageLogDoc.Update(log);
+            await _uow.DbContext.SaveChangesAsync(cancellationToken);
+            id = log!.Id;
         }
 
         return id;

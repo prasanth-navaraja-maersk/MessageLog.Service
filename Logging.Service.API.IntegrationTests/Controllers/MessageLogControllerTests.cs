@@ -25,8 +25,6 @@ public class MessageLogControllerTests : IClassFixture<ApiWebApplicationFactory>
         _fixture = fixture;
         _faker = new Faker();
         _builder = new Builder();
-        //_messageLogDocsData = builder.CreateListOfSize<MessageLogDoc>(100).Build();
-        //_messageLogDocsFeed = Feed.CreateRandom("messageLogDocs", _messageLogDocsData);
     }
 
     [Fact]
@@ -35,23 +33,23 @@ public class MessageLogControllerTests : IClassFixture<ApiWebApplicationFactory>
         // Arrange
         var messageLogRequests = GetMessageLogRequest();
         var dataFeed = Feed.CreateCircular("requests", messageLogRequests);
-        var step = Step.Create("Upsert_Message_Logs", feed: dataFeed, async context =>
+        var step = Step.Create("Upsert", feed: dataFeed, async context =>
         {
             var resp = await _fixture.CreateClient()
-                .PostAsJsonAsync("/MessageLogs", context.FeedItem, CancellationToken.None);
+                .PostAsJsonAsync("/MessageLogDocuments", context.FeedItem, CancellationToken.None);
 
             return resp.ToNBomberResponse();
         });
 
         var scenario = ScenarioBuilder
-            .CreateScenario("Message_Logs", step)
+            .CreateScenario("Upsert_Message_Log_Documents", step)
             .WithoutWarmUp()
             .WithLoadSimulations(
                 Simulation.KeepConstant(copies: 10, during: TimeSpan.FromSeconds(10)))
             .WithClean(async _ =>
             {
                 await _fixture.CreateClient()
-                    .DeleteAsync("/MessageLogs");
+                    .DeleteAsync("/MessageLogDocuments");
             });
 
         // Act
@@ -67,7 +65,7 @@ public class MessageLogControllerTests : IClassFixture<ApiWebApplicationFactory>
         stepStats.Ok.Request.Count.Should().BeGreaterThan(1000);
         stepStats.Ok.Request.RPS.Should().BeGreaterThan(100);
         stepStats.Ok.Latency.Percent75.Should().BeLessOrEqualTo(100);
-        stepStats.Ok.DataTransfer.MinBytes.Should().Be(4);
+        stepStats.Ok.DataTransfer.MinBytes.Should().BeGreaterThanOrEqualTo(1);
         stepStats.Ok.DataTransfer.AllBytes.Should().BeGreaterOrEqualTo(1000L);
     }
 
@@ -78,31 +76,31 @@ public class MessageLogControllerTests : IClassFixture<ApiWebApplicationFactory>
         var requests = GetMessageLogRequest();
         var dataFeed = Feed.CreateRandom("requests", requests);
 
-        var stepInsert = Step.Create("Upsert_Message_Logs", feed: dataFeed, async context =>
+        var stepInsert = Step.Create("Upsert", feed: dataFeed, async context =>
         {
             var resp = await _fixture.CreateClient()
-                .PostAsJsonAsync("/MessageLogs", context.FeedItem, CancellationToken.None);
+                .PostAsJsonAsync("/MessageLogDocuments", context.FeedItem, CancellationToken.None);
 
             return resp.ToNBomberResponse();
         });
 
-        var stepGet = Step.Create("Get_Message_Logs", async _ =>
+        var stepGet = Step.Create("Get", async _ =>
         {
             var resp = await _fixture.CreateClient()
-                .GetAsync("/MessageLogs", CancellationToken.None);
+                .GetAsync("/MessageLogDocuments", CancellationToken.None);
 
             return resp.ToNBomberResponse();
         });
 
         var scenario = ScenarioBuilder
-            .CreateScenario("Message_Logs", stepInsert, stepGet)
+            .CreateScenario("Get_Message_Log_Documents", stepInsert, stepGet)
             .WithoutWarmUp()
             .WithLoadSimulations(
                 Simulation.KeepConstant(copies: 10, during: TimeSpan.FromSeconds(10)))
             .WithClean(async _ =>
             {
                 await _fixture.CreateClient()
-                    .DeleteAsync("/MessageLogs");
+                    .DeleteAsync("/MessageLogDocuments");
             });
 
         // Act
@@ -119,7 +117,7 @@ public class MessageLogControllerTests : IClassFixture<ApiWebApplicationFactory>
         stepStats.Ok.Request.Count.Should().BeGreaterThan(1000);
         stepStats.Ok.Request.RPS.Should().BeGreaterThan(100);
         stepStats.Ok.Latency.Percent75.Should().BeLessOrEqualTo(100);
-        stepStats.Ok.DataTransfer.MinBytes.Should().Be(4);
+        stepStats.Ok.DataTransfer.MinBytes.Should().BeGreaterThanOrEqualTo(1);
         stepStats.Ok.DataTransfer.AllBytes.Should().BeGreaterOrEqualTo(1000L);
     }
 
@@ -130,21 +128,21 @@ public class MessageLogControllerTests : IClassFixture<ApiWebApplicationFactory>
         var requests = GetMessageLogRequest();
         var dataFeed = Feed.CreateRandom("requests", requests);
 
-        var stepInsert = Step.Create("Upsert_Message_Logs", feed: dataFeed, async context =>
+        var stepInsert = Step.Create("Upsert", feed: dataFeed, async context =>
         {
             var resp = await _fixture.CreateClient()
-                .PostAsJsonAsync("/MessageLogs", context.FeedItem, CancellationToken.None);
+                .PostAsJsonAsync("/MessageLogDocuments", context.FeedItem, CancellationToken.None);
             var nbomberResponse = resp.ToNBomberResponse();
 
             return Response.Ok(context.FeedItem.MessageType, statusCode: nbomberResponse.StatusCode, sizeBytes: nbomberResponse.SizeBytes);
         });
 
-        var stepGet = Step.Create("Get_Message_Logs_By_Type", async context =>
+        var stepGet = Step.Create("Get_By_Type", async context =>
         {
             var query = HttpUtility.ParseQueryString(string.Empty);
             query["messageType"] = context.GetPreviousStepResponse<string>();
 
-            var builder = new UriBuilder("http://localhost.com/MessageLogs/MessageType");
+            var builder = new UriBuilder("http://localhost.com/MessageLogDocuments/MessageType");
             builder.Port = -1;
             builder.Query = query.ToString();
             string url = builder.ToString();
@@ -156,14 +154,14 @@ public class MessageLogControllerTests : IClassFixture<ApiWebApplicationFactory>
         });
 
         var scenario = ScenarioBuilder
-            .CreateScenario("Message_Logs", stepInsert, stepGet)
+            .CreateScenario("Get_By_Type_Message_Log_Documents", stepInsert, stepGet)
             .WithoutWarmUp()
             .WithLoadSimulations(
                 Simulation.KeepConstant(copies: 10, during: TimeSpan.FromSeconds(10)))
             .WithClean(async _ =>
             {
                 await _fixture.CreateClient()
-                    .DeleteAsync("/MessageLogs");
+                    .DeleteAsync("/MessageLogDocuments");
             });
 
         // Act
@@ -180,7 +178,7 @@ public class MessageLogControllerTests : IClassFixture<ApiWebApplicationFactory>
         stepStats.Ok.Request.Count.Should().BeGreaterThan(1000);
         stepStats.Ok.Request.RPS.Should().BeGreaterThan(100);
         stepStats.Ok.Latency.Percent75.Should().BeLessOrEqualTo(100);
-        stepStats.Ok.DataTransfer.MinBytes.Should().Be(4);
+        stepStats.Ok.DataTransfer.MinBytes.Should().BeGreaterThanOrEqualTo(1);
         stepStats.Ok.DataTransfer.AllBytes.Should().BeGreaterOrEqualTo(1000L);
     }
 
@@ -193,9 +191,9 @@ public class MessageLogControllerTests : IClassFixture<ApiWebApplicationFactory>
 
         // Act
         _ = await _fixture.CreateClient()
-            .PostAsJsonAsync("/MessageLogs", messageLogRequest, CancellationToken.None);
+            .PostAsJsonAsync("/MessageLogDocuments", messageLogRequest, CancellationToken.None);
 
-        var result = await _fixture.CreateClient().GetAsync("/MessageLogs", CancellationToken.None);
+        var result = await _fixture.CreateClient().GetAsync("/MessageLogDocuments", CancellationToken.None);
 
         // Assert
         result.Should().BeSuccessful();
@@ -210,13 +208,13 @@ public class MessageLogControllerTests : IClassFixture<ApiWebApplicationFactory>
         var query = HttpUtility.ParseQueryString(string.Empty);
         query["messageType"] = messageLogRequest.First().MessageType;
 
-        var builder = new UriBuilder("http://localhost.com/MessageLogs/MessageType");
+        var builder = new UriBuilder("http://localhost.com/MessageLogDocuments/MessageType");
         builder.Port = -1;
         builder.Query = query.ToString();
         string url = builder.ToString();
 
         _ = await _fixture.CreateClient()
-            .PostAsJsonAsync("/MessageLogs", messageLogRequest!.First(), CancellationToken.None);
+            .PostAsJsonAsync("/MessageLogDocuments", messageLogRequest!.First(), CancellationToken.None);
 
         //Act
         var result = await _fixture.CreateClient().GetAsync(url, CancellationToken.None);

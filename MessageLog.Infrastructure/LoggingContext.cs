@@ -16,7 +16,7 @@ namespace MessageLog.Infrastructure
                                 "User Id = postgres; Password=postgres;Server=localhost;Port=5432;Database=LoggingService-poc;Integrated Security = true; Pooling=true";
         }
 
-        public DbSet<Entities.MessageLog> MessageLog { get; set; }
+        public DbSet<MessageLogDocument> MessageLogDocuments { get; set; }
         public DbSet<MessageLogDoc> MessageLogDoc { get; set; }
         public DbSet<ErrorLog> ErrorLog { get; set; }
         public DbSet<ErrorLogDoc> ErrorLogDoc { get; set; }
@@ -28,8 +28,8 @@ namespace MessageLog.Infrastructure
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Entities.MessageLog>()
-                .Property(b => b.MessageLogs)
+            modelBuilder.Entity<MessageLogDocument>()
+                .Property(b => b.MessageLogDocuments)
                 .HasColumnType("jsonb");
             modelBuilder.Entity<ErrorLog>()
                 .Property(b => b.ErrorLogs)
