@@ -54,7 +54,7 @@ public class ErrorLogControllerTests : IClassFixture<ApiWebApplicationFactory>
             ErrorLogs = errors
         };
 
-        var step = Step.Create("Upsert_Error_Logs", async _ =>
+        var step = Step.Create("Upsert", async _ =>
         {
             var resp = await _fixture.CreateClient()
                 .PostAsJsonAsync("/ErrorLogs", errorLogRequest, CancellationToken.None);
@@ -63,7 +63,7 @@ public class ErrorLogControllerTests : IClassFixture<ApiWebApplicationFactory>
         });
 
         var scenario = ScenarioBuilder
-            .CreateScenario("Error_Logs", step)
+            .CreateScenario("Upsert_Error_Logs", step)
             .WithoutWarmUp()
             .WithLoadSimulations(
                 Simulation.KeepConstant(copies: 10, during: TimeSpan.FromSeconds(10)));
@@ -82,6 +82,6 @@ public class ErrorLogControllerTests : IClassFixture<ApiWebApplicationFactory>
         stepStats.Ok.Request.RPS.Should().BeGreaterThan(100);
         stepStats.Ok.Latency.Percent75.Should().BeLessOrEqualTo(100);
         stepStats.Ok.DataTransfer.MinBytes.Should().Be(4);
-        stepStats.Ok.DataTransfer.AllBytes.Should().BeGreaterOrEqualTo(14000L);
+        stepStats.Ok.DataTransfer.AllBytes.Should().BeGreaterOrEqualTo(1000L);
     }
 }
