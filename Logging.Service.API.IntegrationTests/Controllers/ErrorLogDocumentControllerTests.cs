@@ -11,12 +11,12 @@ using NBomber.Plugins.Http.CSharp;
 
 namespace Logging.Service.API.IntegrationTests.Controllers;
 
-public class ErrorLogControllerTests : IClassFixture<ApiWebApplicationFactory>
+public class ErrorLogDocumentControllerTests : IClassFixture<ApiWebApplicationFactory>
 {
     private readonly ApiWebApplicationFactory _fixture;
     private readonly Faker _faker;
 
-    public ErrorLogControllerTests(ApiWebApplicationFactory fixture)
+    public ErrorLogDocumentControllerTests(ApiWebApplicationFactory fixture)
     {
         _fixture = fixture;
         _faker = new Faker();
@@ -47,23 +47,23 @@ public class ErrorLogControllerTests : IClassFixture<ApiWebApplicationFactory>
         }).ToJsonString();
 
         using var errors = JsonDocument.Parse(errorLogs);
-        var errorLogRequest = new ErrorLogRequest
+        var errorLogRequest = new ErrorLogDocumentRequest
         {
             LogMessageId = _faker.Random.AlphaNumeric(10),
             LogMessageType = _faker.Random.AlphaNumeric(10),
-            ErrorLogs = errors
+            ErrorLogDocuments = errors
         };
 
-        var step = Step.Create("Upsert_Error_Logs", async _ =>
+        var step = Step.Create("Upsert", async _ =>
         {
             var resp = await _fixture.CreateClient()
-                .PostAsJsonAsync("/ErrorLogs", errorLogRequest, CancellationToken.None);
+                .PostAsJsonAsync("/ErrorLogDocuments", errorLogRequest, CancellationToken.None);
                 
             return resp.ToNBomberResponse();
         });
 
         var scenario = ScenarioBuilder
-            .CreateScenario("Error_Logs", step)
+            .CreateScenario("Upsert_Error_Log_Documents", step)
             .WithoutWarmUp()
             .WithLoadSimulations(
                 Simulation.KeepConstant(copies: 10, during: TimeSpan.FromSeconds(10)));
@@ -81,7 +81,7 @@ public class ErrorLogControllerTests : IClassFixture<ApiWebApplicationFactory>
         stepStats.Ok.Request.Count.Should().BeGreaterThan(1000);
         stepStats.Ok.Request.RPS.Should().BeGreaterThan(100);
         stepStats.Ok.Latency.Percent75.Should().BeLessOrEqualTo(100);
-        stepStats.Ok.DataTransfer.MinBytes.Should().Be(4);
-        stepStats.Ok.DataTransfer.AllBytes.Should().BeGreaterOrEqualTo(14000L);
+        stepStats.Ok.DataTransfer.MinBytes.Should().BeGreaterThanOrEqualTo(1);
+        stepStats.Ok.DataTransfer.AllBytes.Should().BeGreaterOrEqualTo(1000L);
     }
 }

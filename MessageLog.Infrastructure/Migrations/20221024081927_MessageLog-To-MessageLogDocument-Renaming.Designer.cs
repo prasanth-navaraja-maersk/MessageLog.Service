@@ -4,6 +4,7 @@ using System.Text.Json;
 using MessageLog.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MessageLog.Infrastructure.Migrations
 {
     [DbContext(typeof(LoggingContext))]
-    partial class LoggingContextModelSnapshot : ModelSnapshot
+    [Migration("20221024081927_MessageLog-To-MessageLogDocument-Renaming")]
+    partial class MessageLogToMessageLogDocumentRenaming
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -24,6 +26,43 @@ namespace MessageLog.Infrastructure.Migrations
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
             modelBuilder.Entity("MessageLog.Infrastructure.Entities.ErrorLog", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<JsonDocument>("ErrorLogs")
+                        .IsRequired()
+                        .HasColumnType("jsonb");
+
+                    b.Property<string>("LogMessageId")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
+
+                    b.Property<string>("LogMessageType")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
+
+                    b.Property<DateTime?>("SystemCreateDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TIMESTAMP")
+                        .HasDefaultValueSql("(localtimestamp)");
+
+                    b.Property<DateTime?>("SystemModifiedDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TIMESTAMP")
+                        .HasDefaultValueSql("(localtimestamp)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ErrorLog", (string)null);
+                });
+
+            modelBuilder.Entity("MessageLog.Infrastructure.Entities.ErrorLogDoc", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -59,47 +98,10 @@ namespace MessageLog.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ErrorLogs", (string)null);
+                    b.ToTable("ErrorLogDoc", (string)null);
                 });
 
-            modelBuilder.Entity("MessageLog.Infrastructure.Entities.ErrorLogDocument", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
-
-                    b.Property<JsonDocument>("ErrorLogDocuments")
-                        .IsRequired()
-                        .HasColumnType("jsonb");
-
-                    b.Property<string>("LogMessageId")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)");
-
-                    b.Property<string>("LogMessageType")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)");
-
-                    b.Property<DateTime?>("SystemCreateDate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("TIMESTAMP")
-                        .HasDefaultValueSql("(localtimestamp)");
-
-                    b.Property<DateTime?>("SystemModifiedDate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("TIMESTAMP")
-                        .HasDefaultValueSql("(localtimestamp)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ErrorLogDocument", (string)null);
-                });
-
-            modelBuilder.Entity("MessageLog.Infrastructure.Entities.MessageLog", b =>
+            modelBuilder.Entity("MessageLog.Infrastructure.Entities.MessageLogDoc", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -111,27 +113,26 @@ namespace MessageLog.Infrastructure.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)");
 
-                    b.Property<long?>("CorrelationId")
-                        .HasColumnType("bigint");
-
                     b.Property<string>("Destination")
                         .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)");
 
                     b.Property<string>("ExternalIdentifier")
+                        .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)");
 
                     b.Property<bool>("IsError")
                         .HasColumnType("boolean");
 
-                    b.Property<string>("MessageType")
+                    b.Property<string>("MessageId")
                         .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)");
 
-                    b.Property<string>("Metadata")
+                    b.Property<string>("MessageType")
+                        .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)");
 
@@ -165,7 +166,7 @@ namespace MessageLog.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("MessageLogs", (string)null);
+                    b.ToTable("MessageLogDoc", (string)null);
                 });
 
             modelBuilder.Entity("MessageLog.Infrastructure.Entities.MessageLogDocument", b =>
@@ -176,7 +177,7 @@ namespace MessageLog.Infrastructure.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
-                    b.Property<string>("CorrelationId")
+                    b.Property<string>("MessageId")
                         .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)");

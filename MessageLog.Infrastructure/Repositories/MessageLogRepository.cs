@@ -13,22 +13,22 @@ public class MessageLogRepository : AsyncRepository<Entities.MessageLog, Logging
         _uow = uow;
     }
 
-    public async Task<long> UpsertMessageLogs(Entities.MessageLog messageLog, CancellationToken cancellationToken)
+    public async Task<long> UpsertMessageLogsAsync(Entities.MessageLog messageLog, CancellationToken cancellationToken)
     {
-        long id = 0;
-        var log = await _uow.DbContext.MessageLog
-            .FirstOrDefaultAsync(x => x.MessageId == messageLog.MessageId 
-                                      && x.MessageType == messageLog.MessageType, 
+        long id;
+        var log = await _uow.DbContext.MessageLogs
+            .FirstOrDefaultAsync(x => x.CorrelationId == messageLog.CorrelationId
+                                      && x.MessageType == messageLog.MessageType,
                 cancellationToken);
         if (log == null)
         {
-            var entity = await _uow.DbContext.MessageLog.AddAsync(messageLog, cancellationToken);
+            var entity = await _uow.DbContext.MessageLogs.AddAsync(messageLog, cancellationToken);
             await _uow.DbContext.SaveChangesAsync(cancellationToken);
             id = entity.Entity.Id;
         }
         else
         {
-            _uow.DbContext.MessageLog.Update(log);
+            _uow.DbContext.MessageLogs.Update(log);
             await _uow.DbContext.SaveChangesAsync(cancellationToken);
             id = log!.Id;
         }
@@ -37,18 +37,16 @@ public class MessageLogRepository : AsyncRepository<Entities.MessageLog, Logging
     }
 
     public async Task<IEnumerable<Entities.MessageLog>> GetMessageLogsAsync(CancellationToken cancellationToken)
-    {
-        return await _uow.DbContext.MessageLog.ToListAsync(cancellationToken);
-    }
-
+        => await _uow.DbContext.MessageLogs.ToListAsync(cancellationToken: cancellationToken);
+    
     public async Task<IEnumerable<Entities.MessageLog>> GetMessageLogsByMessageTypeAsync(string messageType, CancellationToken cancellationToken)
-    {
-        return await _uow.DbContext.MessageLog.Where(m=>m.MessageType == messageType).ToListAsync(cancellationToken);
-    }
+        => await _uow.DbContext.MessageLogs
+            .Where(x => x.MessageType == messageType)
+            .ToListAsync(cancellationToken: cancellationToken);
 
     public void ClearMessageLogs()
     {
-        _uow.DbContext.MessageLog.RemoveRange(_uow.DbContext.MessageLog);
+        _uow.DbContext.MessageLogs.RemoveRange(_uow.DbContext.MessageLogs);
         _uow.DbContext.SaveChanges();
     }
 }

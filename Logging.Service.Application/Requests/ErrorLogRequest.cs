@@ -1,10 +1,8 @@
-﻿using System.Text.Json;
+﻿using MessageLog.Infrastructure.Entities;
 
 namespace Logging.Service.Application.Requests;
 
 public class ErrorLogRequest
 {
-    public string LogMessageId { get; set; }
-    public string LogMessageType { get; set; }
-    public JsonDocument ErrorLogs { get; set; }
+    public ErrorLog ErrorLog { get; set; }
 }

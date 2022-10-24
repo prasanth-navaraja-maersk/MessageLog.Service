@@ -4,6 +4,7 @@ using System.Text.Json;
 using MessageLog.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MessageLog.Infrastructure.Migrations
 {
     [DbContext(typeof(LoggingContext))]
-    partial class LoggingContextModelSnapshot : ModelSnapshot
+    [Migration("20221024091641_ErrorLog-Rename-To-ErrorLogDocument")]
+    partial class ErrorLogRenameToErrorLogDocument
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -23,7 +25,7 @@ namespace MessageLog.Infrastructure.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("MessageLog.Infrastructure.Entities.ErrorLog", b =>
+            modelBuilder.Entity("MessageLog.Infrastructure.Entities.ErrorLogDoc", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -59,7 +61,7 @@ namespace MessageLog.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ErrorLogs", (string)null);
+                    b.ToTable("ErrorLogDoc", (string)null);
                 });
 
             modelBuilder.Entity("MessageLog.Infrastructure.Entities.ErrorLogDocument", b =>

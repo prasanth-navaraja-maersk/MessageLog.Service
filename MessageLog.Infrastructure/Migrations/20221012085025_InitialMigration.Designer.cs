@@ -34,7 +34,7 @@ namespace MessageLog.Infrastructure.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
-                    b.Property<ErrorLogDoc>("ErrorLogs")
+                    b.Property<ErrorLog>("ErrorLogs")
                         .IsRequired()
                         .HasColumnType("jsonb");
 

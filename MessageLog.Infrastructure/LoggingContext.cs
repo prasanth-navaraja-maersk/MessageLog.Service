@@ -16,10 +16,10 @@ namespace MessageLog.Infrastructure
                                 "User Id = postgres; Password=postgres;Server=localhost;Port=5432;Database=LoggingService-poc;Integrated Security = true; Pooling=true";
         }
 
-        public DbSet<Entities.MessageLog> MessageLog { get; set; }
-        public DbSet<MessageLogDoc> MessageLogDoc { get; set; }
-        public DbSet<ErrorLog> ErrorLog { get; set; }
-        public DbSet<ErrorLogDoc> ErrorLogDoc { get; set; }
+        public DbSet<MessageLogDocument> MessageLogDocuments { get; set; }
+        public DbSet<Entities.MessageLog> MessageLogs { get; set; }
+        public DbSet<ErrorLogDocument> ErrorLogDocuments { get; set; }
+        public DbSet<ErrorLog> ErrorLogs { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
             => optionsBuilder.UseNpgsql(_connectionString);
@@ -28,17 +28,17 @@ namespace MessageLog.Infrastructure
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Entities.MessageLog>()
-                .Property(b => b.MessageLogs)
+            modelBuilder.Entity<MessageLogDocument>()
+                .Property(b => b.MessageLogDocuments)
                 .HasColumnType("jsonb");
-            modelBuilder.Entity<ErrorLog>()
-                .Property(b => b.ErrorLogs)
+            modelBuilder.Entity<ErrorLogDocument>()
+                .Property(b => b.ErrorLogDocuments)
                 .HasColumnType("jsonb");
 
-            modelBuilder.Entity<MessageLogDoc>()
-                .ToTable(nameof(MessageLogDoc));
-            modelBuilder.Entity<ErrorLogDoc>()
-                .ToTable(nameof(ErrorLogDoc));
+            modelBuilder.Entity<Entities.MessageLog>()
+                .ToTable(nameof(MessageLogs));
+            modelBuilder.Entity<ErrorLog>()
+                .ToTable(nameof(ErrorLogs));
         }
     }
 }
