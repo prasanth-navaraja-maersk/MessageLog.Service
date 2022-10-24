@@ -18,7 +18,7 @@ namespace MessageLog.Infrastructure
 
         public DbSet<MessageLogDocument> MessageLogDocuments { get; set; }
         public DbSet<Entities.MessageLog> MessageLogs { get; set; }
-        public DbSet<ErrorLog> ErrorLog { get; set; }
+        public DbSet<ErrorLogDocument> ErrorLogDocuments { get; set; }
         public DbSet<ErrorLogDoc> ErrorLogDoc { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -31,8 +31,8 @@ namespace MessageLog.Infrastructure
             modelBuilder.Entity<MessageLogDocument>()
                 .Property(b => b.MessageLogDocuments)
                 .HasColumnType("jsonb");
-            modelBuilder.Entity<ErrorLog>()
-                .Property(b => b.ErrorLogs)
+            modelBuilder.Entity<ErrorLogDocument>()
+                .Property(b => b.ErrorLogDocuments)
                 .HasColumnType("jsonb");
 
             modelBuilder.Entity<Entities.MessageLog>()

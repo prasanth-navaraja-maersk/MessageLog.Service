@@ -2,9 +2,9 @@
 
 namespace Logging.Service.Application.Requests;
 
-public class ErrorLogRequest
+public class ErrorLogDocumentRequest
 {
     public string LogMessageId { get; set; }
     public string LogMessageType { get; set; }
-    public JsonDocument ErrorLogs { get; set; }
+    public JsonDocument ErrorLogDocuments { get; set; }
 }
