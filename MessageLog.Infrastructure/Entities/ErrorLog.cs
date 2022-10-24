@@ -2,7 +2,7 @@
 
 namespace MessageLog.Infrastructure.Entities;
 
-public class ErrorLogDoc : IEntity<long>, ISystemCreateDate, ISystemModifiedDate
+public class ErrorLog : IEntity<long>, ISystemCreateDate, ISystemModifiedDate
 {
     public long Id { get; set; }
     public long? CorrelationId { get; set; }

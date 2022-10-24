@@ -47,7 +47,7 @@ namespace MessageLog.Infrastructure.Migrations
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    ErrorLogs = table.Column<ErrorLogDoc>(type: "jsonb", nullable: false),
+                    ErrorLogs = table.Column<ErrorLog>(type: "jsonb", nullable: false),
                     ExternalIdentifier = table.Column<int>(type: "integer", nullable: true),
                     SystemCreateDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },

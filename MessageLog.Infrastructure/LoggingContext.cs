@@ -19,7 +19,7 @@ namespace MessageLog.Infrastructure
         public DbSet<MessageLogDocument> MessageLogDocuments { get; set; }
         public DbSet<Entities.MessageLog> MessageLogs { get; set; }
         public DbSet<ErrorLogDocument> ErrorLogDocuments { get; set; }
-        public DbSet<ErrorLogDoc> ErrorLogDoc { get; set; }
+        public DbSet<ErrorLog> ErrorLogs { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
             => optionsBuilder.UseNpgsql(_connectionString);
@@ -37,8 +37,8 @@ namespace MessageLog.Infrastructure
 
             modelBuilder.Entity<Entities.MessageLog>()
                 .ToTable(nameof(MessageLogs));
-            modelBuilder.Entity<ErrorLogDoc>()
-                .ToTable(nameof(ErrorLogDoc));
+            modelBuilder.Entity<ErrorLog>()
+                .ToTable(nameof(ErrorLogs));
         }
     }
 }

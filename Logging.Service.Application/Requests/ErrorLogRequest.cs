@@ -2,7 +2,7 @@
 
 namespace Logging.Service.Application.Requests;
 
-public class ErrorLogDocRequest
+public class ErrorLogRequest
 {
-    public ErrorLogDoc ErrorLogDoc { get; set; }
+    public ErrorLog ErrorLog { get; set; }
 }
