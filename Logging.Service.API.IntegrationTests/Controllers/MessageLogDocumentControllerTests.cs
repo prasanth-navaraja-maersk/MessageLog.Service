@@ -10,17 +10,18 @@ using Logging.Service.API.IntegrationTests.TestFramework;
 using NBomber.Contracts;
 using NBomber.Contracts.Stats;
 using NBomber.CSharp;
+using MessageLog.Infrastructure;
 using NBomber.Plugins.Http.CSharp;
 
 namespace Logging.Service.API.IntegrationTests.Controllers;
 
-public class MessageLogDocumentControllerTests : IClassFixture<ApiWebApplicationFactory>
+public class MessageLogDocumentControllerTests : IClassFixture<IntegrationTestFactory<Program, LoggingContext>>
 {
-    private readonly ApiWebApplicationFactory _fixture;
+    private readonly IntegrationTestFactory<Program, LoggingContext> _fixture;
     private readonly Faker _faker;
     private readonly Builder _builder;
 
-    public MessageLogDocumentControllerTests(ApiWebApplicationFactory fixture)
+    public MessageLogDocumentControllerTests(IntegrationTestFactory<Program, LoggingContext> fixture)
     {
         _fixture = fixture;
         _faker = new Faker();

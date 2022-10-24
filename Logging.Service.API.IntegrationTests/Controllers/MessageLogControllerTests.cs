@@ -11,18 +11,19 @@ using FizzWare.NBuilder;
 using NBomber.Contracts;
 using System.Net.Http.Json;
 using System.Web;
+using MessageLog.Infrastructure;
 
 namespace Logging.Service.API.IntegrationTests.Controllers;
 
-public class MessageLogControllerTests : IClassFixture<ApiWebApplicationFactory>
+public class MessageLogControllerTests : IClassFixture<IntegrationTestFactory<Program, LoggingContext>>
 {
-    private readonly ApiWebApplicationFactory _fixture;
+    private readonly IntegrationTestFactory<Program, LoggingContext> _fixture;
     private readonly Faker _faker;
     private readonly CancellationToken _cancellationToken;
     private readonly IFeed<MessageLog.Infrastructure.Entities.MessageLog> _messageLogsFeed;
     private readonly IList<MessageLog.Infrastructure.Entities.MessageLog> _messageLogsData;
 
-    public MessageLogControllerTests(ApiWebApplicationFactory fixture)
+    public MessageLogControllerTests(IntegrationTestFactory<Program, LoggingContext> fixture)
     {
         _fixture = fixture;
         _faker = new Faker();

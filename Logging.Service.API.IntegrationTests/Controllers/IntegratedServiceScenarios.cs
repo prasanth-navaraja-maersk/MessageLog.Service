@@ -4,17 +4,18 @@ using Logging.Service.Application.Requests;
 using Bogus;
 using FizzWare.NBuilder;
 using Logging.Service.API.IntegrationTests.TestFramework;
+using MessageLog.Infrastructure;
 using Newtonsoft.Json;
 
 namespace Logging.Service.API.IntegrationTests.Controllers;
 
-public class IntegratedServiceScenarios : IClassFixture<ApiWebApplicationFactory>
+public class IntegratedServiceScenarios : IClassFixture<IntegrationTestFactory<Program, LoggingContext>>
 {
-    private readonly ApiWebApplicationFactory _fixture;
+    private readonly IntegrationTestFactory<Program, LoggingContext> _fixture;
     private readonly Faker _faker;
     private readonly Builder _builder;
 
-    public IntegratedServiceScenarios(ApiWebApplicationFactory fixture)
+    public IntegratedServiceScenarios(IntegrationTestFactory<Program, LoggingContext> fixture)
     {
         _fixture = fixture;
         _builder = new Builder();

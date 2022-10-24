@@ -5,18 +5,19 @@ using FluentAssertions;
 using Logging.Service.Application.Requests;
 using Bogus;
 using Logging.Service.API.IntegrationTests.TestFramework;
+using MessageLog.Infrastructure;
 using NBomber.Contracts.Stats;
 using NBomber.CSharp;
 using NBomber.Plugins.Http.CSharp;
 
 namespace Logging.Service.API.IntegrationTests.Controllers;
 
-public class ErrorLogDocumentControllerTests : IClassFixture<ApiWebApplicationFactory>
+public class ErrorLogDocumentControllerTests : IClassFixture<IntegrationTestFactory<Program, LoggingContext>>
 {
-    private readonly ApiWebApplicationFactory _fixture;
+    private readonly IntegrationTestFactory<Program, LoggingContext> _fixture;
     private readonly Faker _faker;
 
-    public ErrorLogDocumentControllerTests(ApiWebApplicationFactory fixture)
+    public ErrorLogDocumentControllerTests(IntegrationTestFactory<Program, LoggingContext> fixture)
     {
         _fixture = fixture;
         _faker = new Faker();
